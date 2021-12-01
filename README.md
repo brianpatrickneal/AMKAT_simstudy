@@ -6,8 +6,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-This R project was used to generate the data and associated plots and
-tables found in:
+The AMKAT_simstudy Rstudio project was used to generate the data and
+associated plots and tables found in:
 
 Brian Neal and Tao He. “An Adaptive Multivariate Kernel-Based Test for
 Association with Multiple Quantitative Traits in High-Dimensional Data.”
