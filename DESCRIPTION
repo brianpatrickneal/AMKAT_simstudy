@@ -11,8 +11,8 @@ Authors@R: c(
         comment = "Source code for OMGA"),
     person("Xiang Zhang", role = "cph", 
         comment = "Source code for DKAT"))
-Description: Simulation study code for AMKAT: A high-dimensional, nonparametric, multivariate test of association
-    for quantitative data, with methods for kernel selection, feature selection 
-    and covariate adjustment.
+Description: Simulation study code for AMKAT: A high-dimensional, nonparametric,
+    multivariate test of association for quantitative data, with methods for 
+    kernel selection, feature selection and covariate adjustment.
 License: GPL (>= 3)
 Imports: AMKAT
