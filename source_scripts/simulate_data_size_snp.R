@@ -29,36 +29,36 @@ data <-
         out <- c(out, p_value + pseudocount)
         out <- c(out, max(p_value, pseudocount)) # floor
 
-        # AMKAT Mean P-value
-        #  10 permutations per test
-        p_value <-
-          mean(apply(rbind(matrix(permutation_statistics,
-                                  nrow = 10, ncol = num_tests_at_10_perms_each),
-                           observed_statistics[1:num_tests_at_10_perms_each]),
-                     MARGIN = 2,
-                     FUN = function(x){mean(x[1:10] >= x[[10 + 1]])}))
-        out <- c(out, p_value + pseudocount)
-        out <- c(out, max(p_value, pseudocount)) # floor
-
-        #  20 permutations per test
-        p_value <-
-          mean(apply(rbind(matrix(permutation_statistics,
-                                  nrow = 20, ncol = num_tests_at_20_perms_each),
-                           observed_statistics[1:num_tests_at_20_perms_each]),
-                     MARGIN = 2,
-                     FUN = function(x){mean(x[1:20] >= x[[20 + 1]])}))
-        out <- c(out, p_value + pseudocount)
-        out <- c(out, max(p_value, pseudocount)) # floor
-
-        #  50 permutations per test
-        p_value <-
-          mean(apply(rbind(matrix(permutation_statistics,
-                                  nrow = 50, ncol = num_tests_at_50_perms_each),
-                           observed_statistics[1:num_tests_at_50_perms_each]),
-                     MARGIN = 2,
-                     FUN = function(x){mean(x[1:50] >= x[[50 + 1]])}))
-        out <- c(out, p_value + pseudocount)
-        out <- c(out, max(p_value, pseudocount)) # floor
+        # # AMKAT Mean P-value
+        # #  10 permutations per test
+        # p_value <-
+        #   mean(apply(rbind(matrix(permutation_statistics,
+        #                           nrow = 10, ncol = num_tests_at_10_perms_each),
+        #                    observed_statistics[1:num_tests_at_10_perms_each]),
+        #              MARGIN = 2,
+        #              FUN = function(x){mean(x[1:10] >= x[[10 + 1]])}))
+        # out <- c(out, p_value + pseudocount)
+        # out <- c(out, max(p_value, pseudocount)) # floor
+        #
+        # #  20 permutations per test
+        # p_value <-
+        #   mean(apply(rbind(matrix(permutation_statistics,
+        #                           nrow = 20, ncol = num_tests_at_20_perms_each),
+        #                    observed_statistics[1:num_tests_at_20_perms_each]),
+        #              MARGIN = 2,
+        #              FUN = function(x){mean(x[1:20] >= x[[20 + 1]])}))
+        # out <- c(out, p_value + pseudocount)
+        # out <- c(out, max(p_value, pseudocount)) # floor
+        #
+        # #  50 permutations per test
+        # p_value <-
+        #   mean(apply(rbind(matrix(permutation_statistics,
+        #                           nrow = 50, ncol = num_tests_at_50_perms_each),
+        #                    observed_statistics[1:num_tests_at_50_perms_each]),
+        #              MARGIN = 2,
+        #              FUN = function(x){mean(x[1:50] >= x[[50 + 1]])}))
+        # out <- c(out, p_value + pseudocount)
+        # out <- c(out, max(p_value, pseudocount)) # floor
 
         # AMKAT Mean Observed Statistic
         p_value <-

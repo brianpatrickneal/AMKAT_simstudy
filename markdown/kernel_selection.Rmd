@@ -1,0 +1,338 @@
+---
+title: 'Simulation Results: Kernel Selection'
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, 
+                      out.width = "100%")
+```
+
+
+We review results from our simulations for kernel selection. 
+
+
+## Prepare Working Environment
+
+We begin by loading the relevant R packages:
+```{r, results='hide', warning=FALSE, message=FALSE}
+pkgs_to_load <- c('dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot')
+lapply(X = pkgs_to_load, FUN = library, character.only = TRUE)
+```
+
+We then define directories for relevant scripts and data:
+```{r}
+dir_main <- dirname(dirname(rstudioapi::getActiveDocumentContext()$path))
+dir_src <- file.path(dir_main, 'source_scripts')
+source(file.path(dir_src, 'define_directories.R'))
+```
+
+Next, we define custom functions and other objects used for plotting:
+```{r}
+source(file.path(dir_src, "define_plot_functions.R"))
+source(file.path(dir_src, "define_plot_settings.R"))
+```
+
+All scenarios in this simulation setting share the following parameter values:
+```{r}
+num_replicates  <- 1000
+error_distribution <- 'normal'
+signal_strength <- 1
+values_for_signal_density <- c('sparse', 'dense')
+values_for_sample_size <- c(50, 100, 150, 200)
+values_for_error_corr_strength <- c(0, 0.5)
+```
+
+
+
+## Continuous Features
+
+This section includes scenarios where $\boldsymbol{X}$ is simulated as a multivariate continuous random vector.  
+
+```{r}
+x_type <- 'cts'
+source(file.path(dir_src, 'initialize_adaptive_across.R'))
+
+# Create filenames and load plot data
+files <- adaptiveAcrossPlotFiles()
+load(files$plotdata)
+```
+
+### Kernel Selection Rates for $Y_1$
+
+We consider the selection rate of each candidate kernel function for the 1st response component $Y_1$.
+
+```{r}
+# Set index of current response component
+y_ind <- 1
+```
+
+
+#### Uncorrelated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly uncorrelated components, i.e., the Pearson correlation coefficient is zero between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+#### Correlated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly correlated components, with the Pearson correlation coefficient equal to $(-1)^{j+j'}0.5$ between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0.5
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+
+
+### Kernel Selection Rates for $Y_2$
+
+We consider the selection rate of each candidate kernel function for the 2nd response component $Y_2$.
+
+```{r}
+# Set index of current response component
+y_ind <- 2
+```
+
+
+#### Uncorrelated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly uncorrelated components, i.e., the Pearson correlation coefficient is zero between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+#### Correlated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly correlated components, with the Pearson correlation coefficient equal to $(-1)^{j+j'}0.5$ between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0.5
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+### Kernel Selection Rates for $Y_3$
+
+We consider the selection rate of each candidate kernel function for the 3rd response component $Y_3$.
+
+```{r}
+# Set index of current response component
+y_ind <- 3
+```
+
+
+#### Uncorrelated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly uncorrelated components, i.e., the Pearson correlation coefficient is zero between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+#### Correlated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly correlated components, with the Pearson correlation coefficient equal to $(-1)^{j+j'}0.5$ between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0.5
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+### Kernel Selection Rates for $Y_4$
+
+We consider the selection rate of each candidate kernel function for the 4th response component $Y_4$.
+
+```{r}
+# Set index of current response component
+y_ind <- 4
+```
+
+
+#### Uncorrelated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly uncorrelated components, i.e., the Pearson correlation coefficient is zero between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+#### Correlated Error Components
+
+We plot the results for scenarios where the random error vector $\boldsymbol{\epsilon}$ is simulated as having linearly correlated components, with the Pearson correlation coefficient equal to $(-1)^{j+j'}0.5$ between each pair of components $\epsilon_j$ and $\epsilon_{j'}$.
+
+```{r}
+# Absolute value of Pearson corr coef. between pairs of error components
+rho <- 0.5
+```
+
+```{r fig.asp = 0.9, fig.width = 9}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type, rho,
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle =
+                   makeKerSelSubtitle(x_type, rho)))
+```
+
+
+## Discrete Features
+
+This section includes scenarios where $\boldsymbol{X}$ is simulated as a multivariate discrete random vector representing additive-encoded SNP-set data.  
+
+```{r}
+x_type <- 'snp'
+source(file.path(dir_src, 'initialize_adaptive_across.R'))
+
+# Create filenames and load plot data
+files <- adaptiveAcrossPlotFiles()
+load(files$plotdata)
+```
+
+### Kernel Selection Rates for $Y_1$
+
+We consider the selection rate of each candidate kernel function for the 1st response component $Y_1$.
+
+```{r}
+# Set index of current response component
+y_ind <- 1
+```
+
+```{r fig.asp = 1.2, fig.width = 7, out.width = "80%"}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type,
+  theme_settings =
+    theme_kersel(plot_margin = margin(l = -20, b = 15)),
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle = makeKerSelSubtitle(x_type)))
+```
+
+### Kernel Selection Rates for $Y_2$
+
+We consider the selection rate of each candidate kernel function for the 2nd response component $Y_2$.
+
+```{r}
+# Set index of current response component
+y_ind <- 2
+```
+
+```{r fig.asp = 1.2, fig.width = 7, out.width = "80%"}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type,
+  theme_settings =
+    theme_kersel(plot_margin = margin(l = -20, b = 15)),
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle = makeKerSelSubtitle(x_type)))
+```
+
+### Kernel Selection Rates for $Y_3$
+
+We consider the selection rate of each candidate kernel function for the 3rd response component $Y_3$.
+
+```{r}
+# Set index of current response component
+y_ind <- 3
+```
+
+```{r fig.asp = 1.2, fig.width = 7, out.width = "80%"}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type,
+  theme_settings =
+    theme_kersel(plot_margin = margin(l = -20, b = 15)),
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle = makeKerSelSubtitle(x_type)))
+```
+
+### Kernel Selection Rates for $Y_4$
+
+We consider the selection rate of each candidate kernel function for the 4th response component $Y_4$.
+
+```{r}
+# Set index of current response component
+y_ind <- 4
+```
+
+```{r fig.asp = 1.2, fig.width = 7, out.width = "80%"}
+makeKerSelPlots(
+  plotdata_kersel[[y_ind]], x_type,
+  theme_settings =
+    theme_kersel(plot_margin = margin(l = -20, b = 15)),
+  title_settings =
+    title_kersel(joint_title = makeKerSelTitle(y_ind),
+                 joint_subtitle = makeKerSelSubtitle(x_type)))
+```

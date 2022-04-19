@@ -1,0 +1,53 @@
+---
+title: "Runtime Benchmarking"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+In this document, we check the time taken to execute the `amkat()` function from the `AMKAT` package under various settings and explore how the run time scales with sample size and feature dimension.  We also explore the run time scaling for the `AMKAT` package's functions to generate the empirical centralized kernel matrix and to apply the PhiMr filter.
+
+All code was executed on Windows 10 using a single core of a 2014 4th Generation (Devil's Canyon) Intel Core i5 4960K with a 6MB cache operating at a core clock frequency of 4.5GHz, a bus clock frequency of 100MHz and an uncore clock frequency of 3.5GHz, as measured by HWiNFO64v7.22-4731 (<http://www.hwinfo.com>).
+
+## Prepare Working Environment
+```{r, results='hide', warning=FALSE, message=FALSE}
+pkgs_to_load <- c('dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot')
+lapply(X = pkgs_to_load, FUN = library, character.only = TRUE)
+dir_main <- dirname(dirname(rstudioapi::getActiveDocumentContext()$path))
+dir_src <- file.path(dir_main, 'source_scripts')
+source(file.path(dir_src, 'define_directories.R'))
+source(file.path(dir_src, 'initialize_runtime_benchmarking.R'))
+source(file.path(dir_src, "define_plot_functions.R"))
+source(file.path(dir_src, "define_plot_settings.R"))
+load(bench_plotdata_file)
+```
+
+## AMKAT, Full Test
+
+
+
+```{r fig.asp = 0.66, fig.width = 7}
+makeAmkatBenchPlots(
+  data_amkat, title_settings = title_bench_amkat(num_permutations))
+```
+
+
+## Function to Compute Kernel Matrix
+
+```{r fig.asp = 0.38, fig.width = 11}
+makeKernelBenchPlots(data_kermat, title_settings = title_bench_ker(reps_kermat))
+```
+
+
+## PhiMr Filter
+
+```{r fig.asp = 1.2, fig.width = 5}
+makePhimrBenchPlot(data_phimr, reps_phimr)
+```
+

@@ -1,18 +1,16 @@
 Package: AMKAT_simstudy
 Title: Simulation Study for AMKAT
-Version: 0.0.0.9001
-Date: 2021-11-30
+Version: 0.0.0.9002
+Date: 2022-4-19
 Authors@R: c(
     person("Brian", "Neal", email = "bneal@mail.sfsu.edu", 
         role = c("aut", "cre")),
     person("Tao", "He", email = "hetao@sfsu.edu",
-        role = c("ths")),
+        role = c("aut", "ths")),
     person("Yamin Deng", role = "cph", 
         comment = "Source code for OMGA"),
     person("Xiang Zhang", role = "cph", 
         comment = "Source code for DKAT"))
-Description: Simulation study code for AMKAT: A high-dimensional, nonparametric,
-    multivariate test of association for quantitative data, with methods for 
-    kernel selection, feature selection and covariate adjustment.
+Description: Simulation study for AMKAT, an adaptive multi-trait kernel-based association test
 License: GPL (>= 3)
 Imports: AMKAT

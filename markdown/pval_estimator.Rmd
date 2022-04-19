@@ -1,0 +1,483 @@
+---
+title: 'Simulation Results: Distribution of AMKAT P-value Estimator Under PhiMr'
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Introduction
+
+We review results from our simulations for setting $\mathbb{S}_2$, which was designed to explore the distribution of our proposed $P$-value estimator for AMKAT for testing with the PhiMr filter. The estimator is defined as
+
+$$\tilde{P}_{T_\mathcal{S}, Q} = \frac{\Big(\sum_{b=1}^B I(\overline{T}_{\mathcal{S}, Q} \leq \ddot{T}_{\mathcal{S},b})\Big) + 1}{B},$$
+where $\overline{T}_{\mathcal{S}, Q}$ is the sample mean of $Q$ AMKAT test statistics computed with PhiMr, $\ddot{T}_{\mathcal{S},b}$ are AMKAT permutation statistics computed with PhiMr, $B$ is the number of permutations and $I$ is the indicator function. 
+
+We are particularly interested in the effect of the number $Q$ of test statistics $T_\mathcal{S}$ and the number $B$ of permutation statistics $\ddot{T}_\mathcal{S}$ used when estimating the $P$-value under the PhiMr filter.
+
+In each scenario for this setting, a single set of data was generated; using this fixed data, we computed 256,000 values of the test statistic $T_\mathcal{S}$ and 2,500,000 permutation statistics $\ddot{T}_\mathcal{S}$ using the PhiMr filter; we also computed 2,500,000 permutation statistics $\ddot{T}$ without the PhiMr filter, as well as the value of the associated test statistic $T$, which is nonrandom on a fixed data set.   
+
+All statistics other than $T$ were equally partitioned into 500 batches, each containing 512 values of $T_\mathcal{S}$, 5000 values of $\ddot{T}_\mathcal{S}$ and 5000 values of $\ddot{T}$. For each batch, different variations of AMKAT were performed using different subsets of the statistics:  first, the common value of $T$ and the first $B$ values of $\ddot{T}$ were used to compute a $P$-value estimate $\hat{P}_T$ for AMKAT without the PhiMr filter, where $B$ ranged from 100 to 5000; next, the first $Q$ values of $T_\mathcal{S}$ and the first $B$ values of $\ddot{T}_\mathcal{S}$ were used to compute a $P$-value $\hat{P}_{T_\mathcal{S}, Q}$ under PhiMr, where $Q$ ranged from 1 to 512 and $B$ ranged from 100 to 5000.  To assess the variability of the PhiMr filter itself (rather than the associated $P$-value) on the fixed data set, for each component of $\boldsymbol{X}$ we recorded the proportion of the 256,000 PhiMr applications for which the component was included in the selected subset.
+
+For all scenarios in this setting, we simulated $\boldsymbol{\epsilon}$ as multivariate normal.  We considered the same signal sets and effect functions as those used in our power simulations.  
+
+Our presentation of results for the first data set contains additional remarks and commentary regarding our proposed $P$-value estimator, its motivations, and the motivational context for the exploration conducted in this simulation setting. Presentation of results for subsequent data sets will assume knowledge of this context.
+
+
+## Prepare Working Environment
+
+We begin by loading the relevant R packages:
+```{r, results='hide', warning=FALSE, message=FALSE}
+pkgs_to_load <- c('dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot')
+lapply(X = pkgs_to_load, FUN = library, character.only = TRUE)
+```
+We then define directories for relevant scripts and data:
+```{r}
+dir_main <- dirname(dirname(rstudioapi::getActiveDocumentContext()$path))
+dir_src <- file.path(dir_main, 'source_scripts')
+source(file.path(dir_src, 'define_directories.R'))
+```
+
+Finally, we define custom functions and other objects used for plotting:
+```{r}
+source(file.path(dir_src, "define_plot_functions.R"))
+source(file.path(dir_src, "define_plot_settings.R"))
+```
+
+
+## Continuous Features
+
+We initialize the simulation setting for the case where the components of $\boldsymbol{X}$ are continuous:
+```{r}
+x_type <- 'cts'
+source(file.path(dir_src, "initialize_adaptive_within.R"))
+```
+
+### Data Set #1
+
+Data Set #1 was generated using the following scenario parameters:
+
+```{r}
+n <- 30 # sample size
+p <- 100 # feature dimension
+signal_density <- 'sparse' # 7 signal variables
+error_correlation_strength <- 0.5 # mixed directions
+```
+
+We load the test and permutation statistics generated on this data set:
+```{r}
+pv_files <- pvaluePlotFiles()
+load(pv_files$stats)
+load(pv_files$pvalues)
+```
+
+#### Distribution of Test and Permutation Statistics
+
+We first plot the distributions of the test statistics and permutation statistics with and without the PhiMr filter:
+
+```{r fig.asp = 0.575, fig.width = 8}
+makeStatDistrPlots(
+  test_stats, perm_stats, perm_stats_no_filter, test_stat_no_filter)
+```
+&nbsp;
+
+The histogram for each sample of statistics has been smoothed using kernel density estimation and mirrored to produce a violin plot.  It should be noted that for a fixed data set, the unknown underlying distribution is actually a discrete distribution.  The choice to display smoothed versions of the empirical densities was made for visual practicality given the large number of data points, and also given that the plot is primarily intended to serve as a conceptual aid to help motivate and illustrate our proposed method of $P$-value estimation with the PhiMr filter. 
+
+The left-hand plot, which displays the distribution of AMKAT permutation statistics generated without the PhiMr filter, corresponds to a traditional permutation test, with a test statistic that is deterministic on our fixed data set.  Visually, the P-value estimate can be loosely conceptualized as the upper-tail area of the distribution of permutation statistics that is cut off by the observed test statistic value (technically, since both the empirical distribution and true distribution of permutation statistics are discrete, neither the true $P$-value or the estimated $P$-value should be conceptualized using a continuous distribution in this manner; as before, however, we abstract away this detail as it is not directly relevant to the concepts we wish to illustrate). This cutoff line at the test statistic observed value is explicitly depicted on the left-hand plot.
+
+The right-hand plot displays, for our data set, the distribution of permutation statistics generated with the PhiMr filter, as well as the distribution of test statistics generated with PhiMr.  Because of the randomness introduced by the permutation-based methodology of the PhiMr filter, the test statistic is no longer fully determined by the data, but instead exhibits random variation as seen in the plot.  This provides an illustrative depiction of the source of additional variation in the $P$-value estimate when using the PhiMr filter.  For this data set, the probability mass for the test statistic appears spread across a considerable range of the permutation statistic distribution; when drawing a single test statistic to use as a tail-area cutoff value for the permutation statistic distribution, this cutoff value, and thus the resulting $P$-value estimate, could vary considerably irrespective of the number of permutation statistics drawn, which is quite a different situation from a traditional permutation test.  
+
+Looking at the plot for this particular data set, we can observe that the test statistic distribution on the right-hand plot appears centered at a cutoff value located farther out in the tail of the respective permutation distribution than is the case for the left-hand plot, implying that on average, AMKAT will yield a lower $P$-value estimate with the PhiMr filter than without it.  However, the spread of the test statistic distribution in the right-hand plot suggests that this outcome may be highly inconsistent across repeated applications of AMKAT on the same data set.  Even if AMKAT with PhiMr is more capable, on average, of discriminating between the null and alternative, this may be of little use if it cannot do so with reasonable consistency.  For certain data and a particular significance level, we could find ourselves in a situation where performing AMKAT with PhiMr could be highly inconsistent in terms of concluding whether or not to reject $H_0$, which is a particularly troubling possibility. 
+
+The plot suggests that in order to address this separate source of variation in the $P$-value estimate introduced by the PhiMr filter, we should seek to reduce the variation in the test statistic value under PhiMr.  One way to do this would be to increase the number of permutations used by PhiMr.  Currently, PhiMr makes its determinations using only a single permuted copy of the data;  by considering more permuted copies and including a way to incorporate the information from the multiple copies into a single decision (by majority rule, etc.), its random variation could be reduced. However, this would scale up the computational complexity of our test by passing the increased cost of PhiMr on to each permutation statistic generated; depending on how many additional permutations are needed by PhiMr to adequately reduce test statistic variation, this could greatly compromise the practical usability of AMKAT with PhiMr.
+
+Another possible strategy, and the one we have ultimately considered (formally defined at the beginning of this document), is depicted in the plot; by generating multiple test statistic values and using a measure of their center as the cutoff value for the permutation statistic distribution, we can expect more consistent $P$-value estimates compared to using only a single value.  This has the added benefit of scaling independently from the number of permutation statistics used, potentially offering much greater flexibility in trading increases in complexity for reductions in the variation of the $P$-value estimator. 
+
+A concern with such a strategy is that, in some sense, it moves even further away from a traditional permutation test, in that the permutation statistics are no longer being generated according to the exact same procedure as the test statistic value that is being compared to their empirical distribution; this is deliberate, as doing so would require each permutation statistic value being the average of multiple statistics generated on the same set of permuted data, which would be similar in terms of effect and computational cost to increasing the number of permutations used by the PhiMr filter.  
+
+Given that we are choosing not to modify our method for computing permutation statistics in the same manner as that for computing our test statistic, it is crucial to investigate whether this proposed method of $P$-value estimation under PhiMr is able to adequately control the probability of a type I error.  This is addressed in our simulations for size.
+
+In the remaining plots for this setting, we continue to investigate how the variation in our proposed $P$-value estimator for AMKAT with the PhiMr filter behaves compared to the traditional estimator used by AMKAT without the PhiMr filter, and how this behavior depends on the number of test statistics and number of permutation statistics used.  One of our objectives across the scenarios in this simulation setting is to form general recommendations for the number of test statistics and permutation statistics to use, which requires a better understanding of the tradeoffs involved in increasing one versus the other from different starting combinations of values.
+
+
+#### Distribution of P-values
+
+After partitioning the test and permutation statistics into batches and using them to estimate $P$-values, we plot the distributions of the resulting $P$-values.
+
+
+```{r fig.asp = 0.7, fig.width = 10}
+makeViolinQPlots(pvalues, title_settings = title_violinQ(num_replicates))
+```
+&nbsp;
+
+```{r fig.asp = 0.95, fig.width = 9}
+makeViolinBPlots(pvalues, title_settings = title_violinB(num_replicates))
+```
+&nbsp;
+
+#### P-value Mean and Standard Deviation
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates)
+```
+&nbsp;
+
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates, summary_stat = mean,
+                title_settings =
+                  title_pvline(
+                    joint_title = "AMKAT Mean P-value on a Fixed Data Set"))
+```
+&nbsp;
+
+#### Distribution of Variable Retention Rates by PhiMr
+
+```{r fig.asp = 0.6, fig.width = 8.25, out.width = "85%"}
+makePhimrHistograms(feature_select_rates,
+                    getSignalIndices(x_type, signal_density))
+```
+
+
+### Data Set #2
+
+This data set was generated using the following scenario parameters:
+
+```{r}
+n <- 50 # sample size
+p <- 100 # feature dimension
+signal_density <- 'dense' # 80 signal variables
+error_correlation_strength <- 0.5 # mixed directions
+```
+
+We load the test and permutation statistics generated on this data set:
+```{r}
+pv_files <- pvaluePlotFiles()
+load(pv_files$stats)
+load(pv_files$pvalues)
+```
+
+
+#### Distribution of Test and Permutation Statistics
+
+We first plot the distributions of the test statistics and permutation statistics with and without the PhiMr filter:
+
+```{r fig.asp = 0.575, fig.width = 8}
+makeStatDistrPlots(
+  test_stats, perm_stats, perm_stats_no_filter, test_stat_no_filter)
+```
+&nbsp;
+
+#### Distribution of P-values
+
+After partitioning the test and permutation statistics into batches and using them to estimate $P$-values, we plot the distributions of the resulting $P$-values.
+
+
+```{r fig.asp = 0.7, fig.width = 10}
+makeViolinQPlots(pvalues, title_settings = title_violinQ(num_replicates))
+```
+&nbsp;
+
+```{r fig.asp = 0.95, fig.width = 9}
+makeViolinBPlots(pvalues, title_settings = title_violinB(num_replicates))
+```
+&nbsp;
+
+#### P-value Mean and Standard Deviation
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates)
+```
+&nbsp;
+
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates, summary_stat = mean,
+                title_settings =
+                  title_pvline(
+                    joint_title = "AMKAT Mean P-value on a Fixed Data Set"))
+```
+&nbsp;
+
+
+#### Distribution of Variable Retention Rates by PhiMr
+
+```{r fig.asp = 0.6, fig.width = 8.25, out.width = "85%"}
+makePhimrHistograms(feature_select_rates,
+                    getSignalIndices(x_type, signal_density))
+```
+
+
+### Data Set #3
+
+This data set was generated using the following scenario parameters:
+
+```{r}
+n <- 50 # sample size
+p <- 150 # feature dimension
+signal_density <- 'sparse' # 7 signal variables
+error_correlation_strength <- 0.5 # mixed directions
+```
+
+We load the test and permutation statistics generated on this data set:
+```{r}
+pv_files <- pvaluePlotFiles()
+load(pv_files$stats)
+load(pv_files$pvalues)
+```
+
+#### Distribution of Test and Permutation Statistics
+
+We first plot the distributions of the test statistics and permutation statistics with and without the PhiMr filter:
+
+```{r fig.asp = 0.575, fig.width = 8}
+makeStatDistrPlots(
+  test_stats, perm_stats, perm_stats_no_filter, test_stat_no_filter)
+```
+&nbsp;
+
+#### Distribution of P-values
+
+After partitioning the test and permutation statistics into batches and using them to estimate $P$-values, we plot the distributions of the resulting $P$-values.
+
+
+```{r fig.asp = 0.7, fig.width = 10}
+makeViolinQPlots(pvalues, title_settings = title_violinQ(num_replicates))
+```
+&nbsp;
+
+```{r fig.asp = 0.95, fig.width = 9}
+makeViolinBPlots(pvalues, title_settings = title_violinB(num_replicates))
+```
+&nbsp;
+
+#### P-value Mean and Standard Deviation
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates)
+```
+&nbsp;
+
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates, summary_stat = mean,
+                title_settings =
+                  title_pvline(
+                    joint_title = "AMKAT Mean P-value on a Fixed Data Set"))
+```
+&nbsp;
+
+
+#### Distribution of Variable Retention Rates by PhiMr
+
+```{r fig.asp = 0.6, fig.width = 8.25, out.width = "85%"}
+makePhimrHistograms(feature_select_rates,
+                    getSignalIndices(x_type, signal_density))
+```
+
+### Data Set #4
+
+This data set was generated using the following scenario parameters:
+
+```{r}
+n <- 50 # sample size
+p <- 200 # feature dimension
+signal_density <- 'sparse' # 7 signal variables
+error_correlation_strength <- 0.5 # mixed directions
+```
+
+We load the test and permutation statistics generated on this data set:
+```{r}
+pv_files <- pvaluePlotFiles()
+load(pv_files$stats)
+load(pv_files$pvalues)
+```
+
+
+#### Distribution of Test and Permutation Statistics
+
+We first plot the distributions of the test statistics and permutation statistics with and without the PhiMr filter:
+
+```{r fig.asp = 0.575, fig.width = 8}
+makeStatDistrPlots(
+  test_stats, perm_stats, perm_stats_no_filter, test_stat_no_filter)
+```
+&nbsp;
+
+#### Distribution of P-values
+
+After partitioning the test and permutation statistics into batches and using them to estimate $P$-values, we plot the distributions of the resulting $P$-values.
+
+
+```{r fig.asp = 0.7, fig.width = 10}
+makeViolinQPlots(pvalues, title_settings = title_violinQ(num_replicates))
+```
+&nbsp;
+
+```{r fig.asp = 0.95, fig.width = 9}
+makeViolinBPlots(pvalues, title_settings = title_violinB(num_replicates))
+```
+&nbsp;
+
+#### P-value Mean and Standard Deviation
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates)
+```
+&nbsp;
+
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates, summary_stat = mean,
+                title_settings =
+                  title_pvline(
+                    joint_title = "AMKAT Mean P-value on a Fixed Data Set"))
+```
+&nbsp;
+
+
+
+#### Distribution of Variable Retention Rates by PhiMr
+
+```{r fig.asp = 0.6, fig.width = 8.25, out.width = "85%"}
+makePhimrHistograms(feature_select_rates,
+                    getSignalIndices(x_type, signal_density))
+```
+
+
+## Discrete Features
+
+We initialize the simulation setting for the case where the components of $\boldsymbol{X}$ represent discrete additive-encoded (0-1-2 quantitative minor allele count) single-nucleotide polymorphism (SNP) data:
+
+```{r}
+x_type <- 'snp'
+p <- 567
+source(file.path(dir_src, "initialize_adaptive_within.R"))
+```
+
+### Data Set #5
+
+This data set was generated using the following scenario parameters:
+
+```{r}
+n <- 50 # sample size
+signal_density <- 'sparse' # 28 signal variables
+error_correlation_strength <- 0.5 # mixed directions
+```
+
+We load the test and permutation statistics generated on this data set:
+```{r}
+pv_files <- pvaluePlotFiles()
+load(pv_files$stats)
+load(pv_files$pvalues)
+```
+
+
+#### Distribution of Test and Permutation Statistics
+
+We first plot the distributions of the test statistics and permutation statistics with and without the PhiMr filter:
+
+```{r fig.asp = 0.575, fig.width = 8}
+makeStatDistrPlots(
+  test_stats, perm_stats, perm_stats_no_filter, test_stat_no_filter)
+```
+&nbsp;
+
+#### Distribution of P-values
+
+After partitioning the test and permutation statistics into batches and using them to estimate $P$-values, we plot the distributions of the resulting $P$-values.
+
+
+```{r fig.asp = 0.7, fig.width = 10}
+makeViolinQPlots(pvalues, title_settings = title_violinQ(num_replicates))
+```
+&nbsp;
+
+```{r fig.asp = 0.95, fig.width = 9}
+makeViolinBPlots(pvalues, title_settings = title_violinB(num_replicates))
+```
+&nbsp;
+
+#### P-value Mean and Standard Deviation
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates)
+```
+&nbsp;
+
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates, summary_stat = mean,
+                title_settings =
+                  title_pvline(
+                    joint_title = "AMKAT Mean P-value on a Fixed Data Set"))
+```
+&nbsp;
+
+
+#### Distribution of Variable Retention Rates by PhiMr
+
+```{r fig.asp = 0.6, fig.width = 8.25, out.width = "85%"}
+makePhimrHistograms(feature_select_rates,
+                    getSignalIndices(x_type, signal_density))
+```
+
+
+### Data Set #6
+
+This data set was generated using the following scenario parameters:
+
+```{r}
+n <- 50 # sample size
+signal_density <- 'dense' # 123 signal variables
+error_correlation_strength <- 0 # independent errors
+```
+
+We load the test and permutation statistics generated on this data set:
+```{r}
+pv_files <- pvaluePlotFiles()
+load(pv_files$stats)
+load(pv_files$pvalues)
+```
+
+
+#### Distribution of Test and Permutation Statistics
+
+We first plot the distributions of the test statistics and permutation statistics with and without the PhiMr filter:
+
+```{r fig.asp = 0.575, fig.width = 8}
+makeStatDistrPlots(
+  test_stats, perm_stats, perm_stats_no_filter, test_stat_no_filter)
+```
+&nbsp;
+
+#### Distribution of P-values
+
+After partitioning the test and permutation statistics into batches and using them to estimate $P$-values, we plot the distributions of the resulting $P$-values.
+
+
+```{r fig.asp = 0.7, fig.width = 10}
+makeViolinQPlots(pvalues, title_settings = title_violinQ(num_replicates))
+```
+&nbsp;
+
+```{r fig.asp = 0.95, fig.width = 9}
+makeViolinBPlots(pvalues, title_settings = title_violinB(num_replicates))
+```
+&nbsp;
+
+#### P-value Mean and Standard Deviation
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates)
+```
+&nbsp;
+
+```{r fig.asp = 0.55, fig.width = 9}
+makePVLinePlots(pvalues, num_replicates, summary_stat = mean,
+                title_settings =
+                  title_pvline(
+                    joint_title = "AMKAT Mean P-value on a Fixed Data Set"))
+```
+&nbsp;
+
+
+#### Distribution of Variable Retention Rates by PhiMr
+
+```{r fig.asp = 0.6, fig.width = 8.25, out.width = "85%"}
+makePhimrHistograms(feature_select_rates,
+                    getSignalIndices(x_type, signal_density))
+```

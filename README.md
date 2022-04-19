@@ -6,21 +6,36 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The AMKAT_simstudy Rstudio project was used to generate the data and
-associated plots and tables found in:
+This is the R project used to house the source code, simulated data and
+full analysis of results for the simulation study found in:
 
 Brian Neal and Tao He. “An Adaptive Multivariate Kernel-Based Test for
 Association with Multiple Quantitative Traits in High-Dimensional Data.”
 Genetic Epidemiology (Not yet submitted).
 
-Executing the simulations requires having the AMKAT package installed,
-which can be found at github.com/brianpatrickneal/AMKAT
+## State of Progress
 
-## Instructions
+This R project is currently in progress and is not yet fully complete:
+\* Source code and simulated results are largely in a completed state.
+\* Markdown documents for analysis of results are mostly in skeletal
+form with analysis and commentary to be added.
 
-#### Executing the script ‘AMKAT_simulation_study.R’ in the main directory will generate all data and plots:
+## Simulation Design
 
--   Data will be contained in the subdirectory ‘simulated_data’
--   Plots will be contained in the subdirectory ‘plots’
+### Initialization Script for Simulation Scenarios
 
-#### To generate a .tex file containing tables for size and power after the corresponding data has been generated, knit the file ‘create_latex_tables.Rnw’, located in the ‘tables’ subdirectory, making sure to knit using knitr instad of Sweave. The .tex file will be titled ‘create_latex_tables.tex’ and will be located in the ‘tables’ subdirectory. The LaTeX code contained in the file can be copied and inserted into another LaTeX document as desired.
+### Correlation Heatmaps for Simulated SNP Set and its Signal Subsets
+
+## Analysis of Results
+
+### Size
+
+### Proposed P-value Estimator
+
+### Power
+
+### Kernel Selection (Across Data Replicates)
+
+### PhiMr Filter for Feature Selection (Across Data Replicates)
+
+### Runtime Benchmarking

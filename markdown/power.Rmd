@@ -1,0 +1,261 @@
+---
+title: 'Simulation Results: Power'
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, 
+                      out.width = "100%")
+```
+
+
+We review results from our simulations for power.
+
+
+## Prepare Working Environment
+
+We begin by loading the relevant R packages:
+```{r, results='hide', warning=FALSE, message=FALSE}
+pkgs_to_load <- c('dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot')
+lapply(X = pkgs_to_load, FUN = library, character.only = TRUE)
+```
+
+We then define directories for relevant scripts and data:
+```{r}
+dir_main <- dirname(dirname(rstudioapi::getActiveDocumentContext()$path))
+dir_src <- file.path(dir_main, 'source_scripts')
+source(file.path(dir_src, 'define_directories.R'))
+```
+
+Next, we define custom functions and other objects used for plotting:
+```{r}
+source(file.path(dir_src, "define_plot_functions.R"))
+source(file.path(dir_src, "define_plot_settings.R"))
+```
+
+All scenarios in this simulation setting share the following parameter values:
+```{r}
+size_or_power <- "power"
+alpha <- 0.05
+num_permutations <- 1000
+num_replicates <- 1000
+error_distribution <- "normal"
+signal_strength <- 1
+```
+
+
+
+## Continuous Features
+
+This section includes scenarios where $\boldsymbol{X}$ was simulated as a multivariate continuous random vector.
+
+```{r}
+x_type <- 'cts'
+```
+
+
+### Feature Dimension $p = 100$
+
+We consider the case where the dimension of $\boldsymbol{X}$ is $p = 100$.  We include simulated results for the following set of scenarios:
+
+```{r}
+p <- 100
+values_for_signal_density <- c('sparse', 'dense')
+values_for_error_corr_strength <- c(0, 0.5)
+values_for_sample_size <- c(20, 30, 40, 50, 60)
+```
+
+Each combination of values from the above parameter vectors corresponds to a distinct scenario. We load the combined and formatted results for this set of scenarios:
+
+```{r}
+plot_files <- powerPlotFiles()
+load(plot_files$plotdata)
+```
+
+#### AMKAT vs. Comparison Methods
+
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerPlot(plot_data_main)
+```
+
+#### Comparison of AMKAT Methods
+
+Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerBarPlot(
+  plot_data_amkat,
+  theme_settings = theme_power(show_legend_title = TRUE,
+                               legend_title_size = rel(0.8)),)
+```
+
+
+
+
+### Feature Dimension $p = 500$
+
+We consider the case where the dimension of $\boldsymbol{X}$ is $p = 500$.  We include simulated results for the following set of scenarios:
+
+```{r}
+p <- 500
+values_for_signal_density <- c('sparse', 'dense')
+values_for_error_corr_strength <- c(0, 0.5)
+values_for_sample_size <- c(50, 75, 100, 125, 150)
+```
+
+Each combination of values from the above parameter vectors corresponds to a distinct scenario. We load the combined and formatted results for this set of scenarios:
+
+```{r}
+plot_files <- powerPlotFiles()
+load(plot_files$plotdata)
+```
+
+#### AMKAT vs. Comparison Methods
+
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerPlot(plot_data_main)
+```
+
+#### Comparison of AMKAT Methods
+
+Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerBarPlot(
+  plot_data_amkat,
+  theme_settings = theme_power(show_legend_title = TRUE,
+                               legend_title_size = rel(0.8)),)
+```
+
+
+
+### Feature Dimension $p = 1000$
+
+We consider the case where the dimension of $\boldsymbol{X}$ is $p = 1000$.  We include simulated results for the following set of scenarios:
+
+```{r}
+p <- 1000
+values_for_signal_density <- c('sparse', 'dense')
+values_for_error_corr_strength <- c(0, 0.5)
+values_for_sample_size <- c(50, 100, 150, 200)
+```
+
+Each combination of values from the above parameter vectors corresponds to a distinct scenario. We load the combined and formatted results for this set of scenarios:
+
+```{r}
+plot_files <- powerPlotFiles()
+load(plot_files$plotdata)
+```
+
+#### AMKAT vs. Comparison Methods
+
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerPlot(plot_data_main)
+```
+
+#### Comparison of AMKAT Methods
+
+Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerBarPlot(
+  plot_data_amkat,
+  theme_settings = theme_power(show_legend_title = TRUE,
+                               legend_title_size = rel(0.8)),)
+```
+
+
+
+
+
+
+### Feature Dimension $p = 2000$
+
+We consider the case where the dimension of $\boldsymbol{X}$ is $p = 2000$.  We include simulated results for the following set of scenarios:
+
+```{r}
+p <- 2000
+values_for_signal_density <- c('sparse', 'dense')
+values_for_error_corr_strength <- c(0.5)
+values_for_sample_size <- c(50, 100, 150, 200)
+```
+
+Each combination of values from the above parameter vectors corresponds to a distinct scenario. We load the combined and formatted results for this set of scenarios:
+
+```{r}
+plot_files <- powerPlotFiles()
+load(plot_files$plotdata)
+```
+
+#### AMKAT vs. Comparison Methods
+
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+
+```{r fig.asp = 0.55, fig.width = 8}
+makeCompoundPowerPlot(plot_data_main)
+```
+
+#### Comparison of AMKAT Methods
+
+Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+
+```{r fig.asp = 0.55, fig.width = 8}
+makeCompoundPowerBarPlot(
+  plot_data_amkat,
+  theme_settings = theme_power(show_legend_title = TRUE,
+                               legend_title_size = rel(0.8)),)
+```
+
+
+
+
+
+
+## Discrete Features
+
+This section includes scenarios where $\boldsymbol{X}$ was simulated as a multivariate discrete random vector representing additive-encoded SNP-set data. We include simulated results for the following set of scenarios:
+
+```{r}
+x_type <- 'snp'
+p <- 567
+values_for_signal_density <- c('sparse', 'dense')
+values_for_error_corr_strength <- c(0, 0.5)
+values_for_sample_size <- c(20, 30, 40, 50, 60, 70)
+```
+
+Each combination of values from the above parameter vectors corresponds to a distinct scenario. We load the combined and formatted results for this set of scenarios:
+
+```{r}
+plot_files <- powerPlotFiles()
+load(plot_files$plotdata)
+```
+
+#### AMKAT vs. Comparison Methods
+
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerPlot(plot_data_main)
+```
+
+#### Comparison of AMKAT Methods
+
+Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerBarPlot(
+  plot_data_amkat,
+  theme_settings = theme_power(show_legend_title = TRUE,
+                               legend_title_size = rel(0.8)),)
+```
+
+

@@ -1,0 +1,144 @@
+---
+title: "Simulated SNP Set Correlation Heatmaps"
+author: "Brian Neal"
+date: "3/29/2022"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+In this document, we exhibit correlation heatmaps for the simulated SNP set used in our simulation study, as well as correlation heatmaps for each of the two sets of signal variables (sparse set and dense set) for this SNP set in settings corresponding to $H_1$.
+
+
+
+```{r, results='hide', warning=FALSE, message=FALSE}
+# load packages
+library(Matrix)
+library(sim1000G)
+library(reshape2)
+library(ggplot2)
+library(viridis)
+
+# Define correlation heatmap function
+heatmap <- function(X, tag){
+  ggplot(data = melt(round(cor(X), 2)), 
+         aes(x = Var1, y = Var2, fill = value)) + 
+    geom_tile() + 
+    scale_fill_gradient2(low = "darkblue",
+                         high = "red",
+                         mid = "white", midpoint = 0, limit = c(-1,1),
+                         space = "Lab", name = "Pearson Cor.") +
+    coord_fixed() +
+    theme_classic() +
+    labs(x = "SNP number", y = "SNP number",
+         title = "Correlation Heatmap",
+         subtitle = paste0(tag, " (", ncol(X), " SNPs)"))
+}
+
+```
+
+
+
+## Full SNP set
+
+We begin by initializing a scenario where $\boldsymbol{X}$ represents SNP-set data, using the parameters seen below.
+
+```{r init_scenario}
+
+# Scenario parameters
+size_or_power <- "power"
+alpha <- 0.05
+num_permutations <- 1000
+num_replicates <- 1000
+x_type <- "snp"
+error_distribution <- "normal"
+signal_strength <- 1
+signal_density <- "sparse"
+error_correlation_strength <- 0.5
+n <- 1000
+p <- 567
+
+# Root and source script directories
+dir_main <- dirname(dirname(rstudioapi::getActiveDocumentContext()$path))
+dir_src <- file.path(dir_main, 'source_scripts')
+
+# Initialize scenario simulation environment
+source(file.path(dir_src, 'initialize_simulation_scenario.R'))
+```
+
+Details on the reference file are seen above. The full SNP-set contains $p = 567$ SNPs, with the reference data comprised of 95 observations. We simulate a sample of size $n = 1000$:
+
+```{r simdata}
+
+X <- simulateDataX()
+
+```
+
+We produce a sample correlation heatmap for the simulated data:
+
+```{r cor_full}
+
+heatmap(X, "Full SNP-set")
+
+```
+
+## Sparse Signal Set
+
+The scenario previously initialized corresponds to $H_1$, with 28 signal variables present among the 567 SNPs (referred to as the sparse setting).  We check the indices of $\boldsymbol{X}$ that correspond to the signal variables:
+
+```{r sparse_ind}
+
+signal_set
+
+```
+
+A correlation heatmap for the SNPs in the signal set is seen below.
+
+```{r cor_sparse}
+
+heatmap(X[ , signal_set], "Sparse signal set")
+
+```
+
+
+## Dense Signal Set
+
+We now initialize a scenario for the dense setting, which involves 123 signal variables among the 567 SNPs:
+
+```{r init_dense}
+
+signal_density <- "dense"
+source(file.path(dirname(dirname(rstudioapi::getActiveDocumentContext()$path)), 
+                 'source_scripts', 'initialize_simulation_scenario.R'))
+
+```
+
+As before, we simulate data for the scenario:
+
+```{r sim_dense}
+
+X <- simulateDataX()
+
+```
+We check the indices of the signal variables...
+
+```{r signal_ind_dense}
+
+signal_set
+
+```
+
+...and plot a correlation heatmap for the signal set:
+
+```{r cor_dense}
+
+heatmap(X[ , signal_set], "Sparse signal set")
+
+```
+
