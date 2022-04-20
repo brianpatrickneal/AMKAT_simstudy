@@ -1,5 +1,5 @@
 ---
-title: 'Simulation Results: Kernel Selection'
+title: 'Simulation Results: Kernel Selection (Incomplete)'
 output:
   html_document:
     toc: yes

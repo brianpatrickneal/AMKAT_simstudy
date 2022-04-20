@@ -1,5 +1,5 @@
 ---
-title: 'Simulation Results: Power'
+title: 'Simulation Results: Power (Incomplete)'
 output:
   html_document:
     toc: yes
