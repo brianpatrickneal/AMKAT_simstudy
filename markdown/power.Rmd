@@ -1,9 +1,21 @@
 ---
-title: 'Simulation Results: Power (Incomplete)'
+title: 'Simulation Results: Power'
 output:
-  html_document:
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
+    number_sections: yes
+    df_print: kable
+  github_document:
+    math_method:
+      engine: webtex
+      url: http://chart.apis.google.com/chart?cht=tx&chl=
+    toc: yes
+  html_document: 
     toc: yes
     toc_float: yes
+    toc_depth: 4
+    df_print: kable
 ---
 
 ```{r setup, include=FALSE}
@@ -19,8 +31,10 @@ We review results from our simulations for power.
 
 We begin by loading the relevant R packages:
 ```{r, results='hide', warning=FALSE, message=FALSE}
-pkgs_to_load <- c('dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot')
+pkgs_to_load <- c('dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot', 
+                  'kableExtra')
 lapply(X = pkgs_to_load, FUN = library, character.only = TRUE)
+options(knitr.table.format = 'html')
 ```
 
 We then define directories for relevant scripts and data:
@@ -50,7 +64,7 @@ signal_strength <- 1
 
 ## Continuous Features
 
-This section includes scenarios where $\boldsymbol{X}$ was simulated as a multivariate continuous random vector.
+This section includes scenarios where $\boldsymbol{X}$ was simulated as a continuous random vector.
 
 ```{r}
 x_type <- 'cts'
@@ -77,23 +91,61 @@ load(plot_files$plotdata)
 
 #### AMKAT vs. Comparison Methods
 
-We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison: one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
 
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerPlot(plot_data_main)
 ```
+Across scenarios involving the 7-variable signal set (top row of plot), the base AMKAT method (without the PhiMr filter) had substantially higher power than each of the three non-AMKAT comparison methods. 
+
+For the 80-variable signal (bottom row of plot), OMGA's power was greater than that of AMKAT; however, subsequent plots reveal this was not the case at greater values of $p$. The 80-variable signal is fixed across scenarios, such that increasing $p$ serves only to increase the number of noise variables.  Thus, OMGA's advantage for the 80-variable signal when $p=100$ appears to be a consequence of $\boldsymbol{X}$ containing a dramatically higher ratio of signal to noise variables (4 to 1) compared to other cases (all of which had ratios well below 1 to 1).  
+
+With 64 test statistics used for $P$-value estimation, using the PhiMr filter with AMKAT yielded only a small improvement in power compared to AMKAT without PhiMr. When using 128 test statistics for $P$-value estimation, the story was more intriguing: for the 7-variable signal, power for AMKAT with PhiMr was considerably lower than without PhiMr; for the 80-variable signal, however, AMKAT's power was much higher with PhiMr than without (in fact, the $Q=128$ variation of AMKAT with PhiMr had the highest power among all methods in the 80-variable signal setting by a large margin). The following plot explores this dynamic in greater detail.
+
+While the method with the most power in each of the two signal settings was an AMKAT method, no single AMKAT method was more powerful than all three non-AMKAT comparison methods under both settings: Under the 7-variable signal setting, AMKAT without PhiMr (as well as with PhiMr at $Q = 64$) resulted in higher power than non-AMKAT methods, but AMKAT with PhiMr at $Q = 128$ performed no better than DKAT; under the 80-variable signal setting, AMKAT with PhiMr at $Q=128$ was more powerful than non-AMKAT methods, but other AMKAT methods were less powerful than OMGA. 
 
 #### Comparison of AMKAT Methods
 
-Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+We compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using different variations for the number $Q$ of test statistics used for $P$-value estimation.
 
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerBarPlot(
   plot_data_amkat,
   theme_settings = theme_power(show_legend_title = TRUE,
-                               legend_title_size = rel(0.8)),)
+                               legend_title_size = rel(0.8)))
 ```
 
+Compared to AMKAT without testing subset selection, incorporating PhiMr with a single test statistic ($Q = 1$) resulted in a modest loss of power in essentially every scenario.  
+
+Increasing to $Q=2$ was sufficient to achieve power at or slightly above that achieved without PhiMr. Each successive variation of AMKAT with PhiMr doubled the value of $Q$; up through $Q=64$, this did not consistently yield a noticeable improvement in power across scenarios when compared to $Q=2$.  
+
+Doubling $Q$ once more, from 64 to 128, resulted in a stark difference in power that showed a consistent pattern across scenarios for the same signal set but a highly divergent pattern between the two signal sets: for the 7-variable signal set, using $Q=128$ resulted in substantially lower power compared to $Q=64$; meanwhile, for the 80-variable signal set, $Q=128$ yielded much higher power under the same comparison. 
+
+Another interesting pattern is that for the 7-variable signal, the power deficit of $Q=128$ compared to $Q=64$ was trivial at $n=20$ and grew as $n$ increased, while for the 80-variable signal, the power surplus of $Q=128$ over $Q=64$ was at its greatest when $n=20$ and diminished as $n$ grew. Thus, despite the difference in the relative power of $Q=128$ to $Q=64$ when comparing the two signal sets, we do see a consistent pattern for both settings in that this relative power is greater for smaller sample sizes.
+
+The reason for the vast difference in power of the $Q=128$ variation between the 7-variable and 80-variable signal settings is unclear; so too is the reason for its sharp deviation in power compared to the near-constant power levels observed across  variations from $Q=2$ to $Q=64$. 
+
+If we refer to results from the simulations for setting $\mathbb{S}_2$ (exploring the distribution of AMKAT statistics and $P$-values on fixed data sets), which considered values of $Q$ up to 512, we observe for each data set that the empirical distribution of the $P$-value estimator exhibited a smooth progression of change both in its variance and in its mean as $Q$ increased from 2 to 512, without any kinks or anomalies that would help to explain why our power results were constant while successively doubling $Q$ from 2 up to 64 yet changed so dramatically on the final doubling to $Q=128$. 
+
+This presents motivation for further study by conducting power simulations that consider a greater range of values for $Q$ and provide more granularity in the variations of its value, in order to simultaneously attain a broader and more textured view of the relationship between $Q$ and empirical power across different settings.
+
+
+#### Full Table of Values
+
+We display the complete table of values for the results in both of the preceding plots:
+```{r}
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '_p', p, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, 
+    caption = caption) %>%
+  # kable_styling(full_width = T) %>%
+  # kable_styling(latex_options = 'scale_down') %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+```
 
 
 
@@ -122,19 +174,41 @@ We plot the empirical power of AMKAT and of the comparison methods included in o
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerPlot(plot_data_main)
 ```
+For these scenarios, AMKAT without PhiMr (as well as with PhiMr using $2 \leq Q \leq 64$ test statistics) had substantially higher power than all non-AMKAT methods under both the 7-variable signal and 80-variable signal settings.  
+
+Following the pattern observed when $p = 100$, AMKAT with PhiMr and $Q=128$ test statistics had lower power than the other two AMKAT methods for the 7-variable signal, while for the 80-variable signal it had higher power.
+
+Our results were consistent with the trend of OMGA's power (relative to other methods) decreasing with the ratio of signal to noise variables: its relative power for the 80-variable signal, with a signal-to-noise-variable ratio of 0.16, was dramatically lower than when $p=100$ (for which the ratio was 4). 
 
 #### Comparison of AMKAT Methods
 
-Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+We compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
 
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerBarPlot(
   plot_data_amkat,
   theme_settings = theme_power(show_legend_title = TRUE,
-                               legend_title_size = rel(0.8)),)
+                               legend_title_size = rel(0.8)))
 ```
+We observe similar patterns as those seen for the case where $p=100$: AMKAT with PhiMr and $2 \leq Q \leq 64$ test statistics had comparable power to AMKAT without PhiMr, AMKAT with PhiMr and $Q=1$ test statistic had modestly reduced power; also, as observed in the previous plot, AMKAT with PhiMr and $Q=128$ test statistics had lower power for the 7-variable signal and higher power for the 80-variable signal. However, its advantage for the 80-variable signal was more modest than the same advantage we observed when $p=100$. 
 
 
+#### Full Table of Values
+
+We display the complete table of values for the results in both of the preceding plots:
+```{r}
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '_p', p, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, 
+    caption = caption) %>%
+  # kable_styling(full_width = T) %>%
+  # kable_styling(latex_options = 'scale_down') %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+```
 
 ### Feature Dimension $p = 1000$
 
@@ -161,21 +235,40 @@ We plot the empirical power of AMKAT and of the comparison methods included in o
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerPlot(plot_data_main)
 ```
+We see results quite similar to those for $p = 500$, with only relatively minor differences.  
+
+For the 80-variable signal, the relative power advantage of AMKAT with PhiMr and $Q=128$ test statistics over other variations of AMKAT was smaller compared to the case where $p=500$, continuing the trend seen there (where the same advantage was smaller compared to the case where $p=100$). Here, this advantage actually disappears for sufficiently large sample size, with $Q=128$ yielding slightly lower power than other AMKAT variations when $n \geq 150$.
+
+For the 7-variable signal, however, the deficit in power with $Q=128$ (relative to other AMKAT methods) observed at $p=100$ was similar to that observed at $p=500$ and $p=1000$. 
 
 #### Comparison of AMKAT Methods
 
-Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+We compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
 
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerBarPlot(
   plot_data_amkat,
   theme_settings = theme_power(show_legend_title = TRUE,
-                               legend_title_size = rel(0.8)),)
+                               legend_title_size = rel(0.8)))
 ```
 
 
+#### Full Table of Values
 
-
+We display the complete table of values for the results in both of the preceding plots:
+```{r}
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '_p', p, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, 
+    caption = caption) %>%
+  # kable_styling(full_width = T) %>%
+  # kable_styling(latex_options = 'scale_down') %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+```
 
 
 ### Feature Dimension $p = 2000$
@@ -196,6 +289,8 @@ plot_files <- powerPlotFiles()
 load(plot_files$plotdata)
 ```
 
+
+
 #### AMKAT vs. Comparison Methods
 
 We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
@@ -204,25 +299,127 @@ We plot the empirical power of AMKAT and of the comparison methods included in o
 makeCompoundPowerPlot(plot_data_main)
 ```
 
+Compared to the case with $p=1000$, AMKAT's advantage over DKAT (the non-AMKAT method with the greatest power) was similar for the 7-variable signal, but more modest for the 80-variable signal.
+
+Comparing the results in this plot to those at other values of $p$, we continue to observe the trend of OMGA's power relative to other methods decreasing with the ratio of signal to noise variables.
+
 #### Comparison of AMKAT Methods
 
-Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+We compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
 
 ```{r fig.asp = 0.55, fig.width = 8}
 makeCompoundPowerBarPlot(
   plot_data_amkat,
   theme_settings = theme_power(show_legend_title = TRUE,
-                               legend_title_size = rel(0.8)),)
+                               legend_title_size = rel(0.8)))
 ```
 
 
+#### Full Table of Values
+
+We display the complete table of values for the results in both of the preceding plots:
+```{r}
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '_p', p, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, 
+    caption = caption) %>%
+  # kable_styling(full_width = T) %>%
+  # kable_styling(latex_options = 'scale_down') %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+```
 
 
 
 
 ## Discrete Features
 
-This section includes scenarios where $\boldsymbol{X}$ was simulated as a multivariate discrete random vector representing additive-encoded SNP-set data. We include simulated results for the following set of scenarios:
+This section includes scenarios where $\boldsymbol{X}$ was simulated as a discrete random vector representing additive-encoded SNP-set data. 
+
+### Weakly Correlated Signal Variables
+
+For both of the the signal sets used in this setting, correlation between signal variables tended to be low. Details on the signal sets, including correlation heatmaps, can be found [here](https://github.com/brianpatrickneal/AMKAT_simstudy/blob/main/markdown/SNPset_corr_heatmaps.html).
+
+```{r}
+signal_correlation <- "low"
+```
+
+We include simulated results for the following set of scenarios:
+
+```{r}
+x_type <- 'snp'
+p <- 567
+values_for_signal_density <- c('sparse', 'dense')
+values_for_error_corr_strength <- c(0, 0.5)
+values_for_sample_size <- c(20, 30, 40, 50, 60, 70)
+```
+
+Each combination of values from the above parameter vectors corresponds to a distinct scenario. We load the combined and formatted results for this set of scenarios:
+
+```{r}
+plot_files <- powerPlotFiles()
+load(plot_files$plotdata)
+```
+
+#### AMKAT vs. Comparison Methods
+
+We plot the empirical power of AMKAT and of the comparison methods included in our simulations.  We include three variations of AMKAT in this comparison:  one without the PhiMr filter and two with the PhiMr filter (one using 64 test statistics and the other using 128).
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerPlot(plot_data_main)
+```
+Among the non-AMKAT methods, across both signal sets, DKAT with a linear phenotype kernel had the highest power when the error components were uncorrelated, while DKAT using the DKAT phenotype kernel had slightly higher power when the scenario parameter $\rho = 0.5$. 
+
+For the 28-variable signal, the power of each AMKAT method was competitive with that of DKAT using the linear phenotype kernel, having power superior to that of the remaining non-AMKAT methods when error components were uncorrelated and slightly below DKAT with the DKAT phenotype kernel when $\rho = 0.5$.
+
+For the 122-variable signal, when the error components were uncorrelated, each AMKAT method had superior power to all non-AMKAT methods, with power modestly above that of DKAT with the linear phenotype kernel; when $\rho = 0.5$, each AMKAT method had power competitive with DKAT using the DKAT phenotype kernel, which was superior to that of the remaining non-AMKAT methods. 
+
+In summary, AMKAT was competitive with the most powerful non-AMKAT method in each setting seen here, with modestly higher power for the 122-variable signal when $\rho = 0$, and with marginally lower power for the 28-variable signal when $\rho = 0.5$. The most powerful non-AMKAT method differed across scenarios, such that no non-AMKAT method had power equal to AMKAT's across all four of the settings depicted in the plot.
+
+
+#### Comparison of AMKAT Methods
+
+We compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+
+```{r fig.asp = 0.8, fig.width = 9}
+makeCompoundPowerBarPlot(
+  plot_data_amkat,
+  theme_settings = theme_power(show_legend_title = TRUE,
+                               legend_title_size = rel(0.8)))
+```
+All variations of AMKAT had similar power under this setting, with the variation of AMKAT using PhiMr and $Q=128$ test statistics having slightly higher power in some scenarios.
+
+#### Full Table of Values
+
+We display the complete table of values for the results in both of the preceding plots:
+```{r}
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '_sc-',
+         signal_correlation, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, 
+    caption = caption) %>%
+  # kable_styling(full_width = T) %>%
+  # kable_styling(latex_options = 'scale_down') %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+```
+
+
+### Strongly Correlated Signal Variables
+
+For both of the the signal sets used in this setting, correlation between signal variables tended to be very strong, with perfect colinearity between some signals. Details on the signal sets, including correlation heatmaps, can be found [here](https://github.com/brianpatrickneal/AMKAT_simstudy/blob/main/markdown/SNPset_corr_heatmaps.html).
+
+```{r}
+signal_correlation <- "high"
+```
+
+We include simulated results for the following set of scenarios:
 
 ```{r}
 x_type <- 'snp'
@@ -247,15 +444,40 @@ We plot the empirical power of AMKAT and of the comparison methods included in o
 makeCompoundPowerPlot(plot_data_main)
 ```
 
+For the 28-variable signal, AMKAT without PhiMr was considerably more powerful than non-AMKAT methods, as was AMKAT using PhiMr with $Q=64$ test statistics; the former was slightly more powerful at very small sample sizes, while the latter was modestly more powerful for $n \geq 50$.  AMKAT using PhiMr with $Q=128$ test statistics was comparable to DKAT with the linear phenotype kernel, which had the highest power among the non-AMKAT methods. Interestingly, DKAT with the linear phenotype kernel had higher power than DKAT with the DKAT phenotype kernel even when $\rho = 0.5$, despite the fact that the DKAT phenotype kernel accounts for correlations among error components while the linear phenotype kernel ignores them (in other settings with $\rho = 0.5$, the DKAT phenotype kernel yielded higher power than the linear phenotype kernel).
+
+For the 122-variable signal, when error components were uncorrelated, relative power among methods was similar to that for the 28-variable signal, though here the power of DKAT with the DKAT phenotype kernel was farther below that of DKAT with the linear phenotype kernel. When $\rho = 0.5$, DKAT had greater power with the DKAT phenotype kernel than the linear phenotype kernel, with power comparable to that of AMKAT. 
+
+In summary, AMKAT was generally more powerful than non-AMKAT methods across these settings, with the PhiMr filter yielding a small increase in power when $Q=64$ and $n \geq 50$, but yielding considerably lower power when $Q=128$.  DKAT with the DKAT phenotype kernel was competitive with AMKAT for the 122-variable signal and correlated error components, but had much lower power in the other settings considered here.
+
 #### Comparison of AMKAT Methods
 
-Next we compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
+We compare the empirical power of all AMKAT variations included in this simulation setting; these include AMKAT without the PhiMr filter and AMKAT with PhiMr using various numbers of test statistics.
 
 ```{r fig.asp = 0.8, fig.width = 9}
 makeCompoundPowerBarPlot(
   plot_data_amkat,
   theme_settings = theme_power(show_legend_title = TRUE,
-                               legend_title_size = rel(0.8)),)
+                               legend_title_size = rel(0.8)))
+```
+Here we notice that PhiMr yields a small drop in power compared to AMKAT without PhiMr when using only $Q=1$ test statistic for $P$-value estimation, similar to the typical case we observed when $\boldsymbol{X}$ was continuous. Power was similar for PhiMr with $2 \leq Q \leq 64$ test statistics, while increasing to $Q=128$ yielded a noticeable drop in power for both the 28-variable and 122-variable signal sets.
+
+#### Full Table of Values
+
+We display the complete table of values for the results in both of the preceding plots:
+```{r}
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '_sc-',
+         signal_correlation, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, 
+    caption = caption) %>%
+  # kable_styling(full_width = T) %>%
+  # kable_styling(latex_options = 'scale_down') %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
 ```
 
 

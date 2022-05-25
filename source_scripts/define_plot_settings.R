@@ -56,7 +56,7 @@ theme_power <- function(
   base_size = 11,
   show_legend_title = FALSE,
   legend_position = "right",
-  legend_margins = margin(1, 1, 1, 1),
+  legend_margins = margin(l = 10),
   legend_title_size = rel(1),
   legend_text_size = rel(0.8),
   legend_symbol_size = 12,
@@ -64,11 +64,11 @@ theme_power <- function(
   fontsize_x = rel(0.9),
   fontsize_y = rel(0.9),
   fontsize_title = rel(1.4),
-  fontsize_subtitle = rel(1),
+  fontsize_subtitle = rel(0.9),
   fontsize_x_axis = rel(0.9),
   fontsize_y_axis = rel(1.2),
   plot_margin = margin(b = 10),
-  aspect = 0.9,
+  aspect = 0.8,
   title_position = "panel") {
   makeTheme(
     base_theme, base_size, show_legend_title, legend_position, legend_margins,
@@ -191,7 +191,7 @@ makeKerSelSubtitle <- function(x_type,
 
   if (error_distribution == 'cauchy') { err_dist <- 'Cauchy ' }
   if (error_distribution == 'normal') { err_dist <- 'normal ' }
-  signal_label <- paste0(100 * signal_strength, '% signal strength')
+  # signal_label <- paste0(100 * signal_strength, '% signal strength')
   if (x_type == 'cts') {
     if (rho == 0) {
       error_corr_label <- 'errors with uncorrelated components'
@@ -200,17 +200,25 @@ makeKerSelSubtitle <- function(x_type,
         paste0('errors with correlated components (\u00B1', '0.5 pairwise)')
     }
     out <- paste0(
-      'Continuous features, ', signal_label,
+      'Continuous features',
+      # signal_label,
       '\nMultivariate ', err_dist, error_corr_label,
       '\nMean kernel selection rate across ', num_replicates,
       ' simulated data replicates')
   }
   if (x_type == 'snp') {
-    out <- paste0(
-      'Discrete SNP-set features (p = ', p, '), ', signal_label,
-      '\nMultivariate ', err_dist, 'errors',
-      '\nMean kernel selection rate across ', num_replicates,
-      ' simulated data replicates')
+    out <- paste0('Simulated SNP set (p = ', p, ')')
+    if (signal_correlation == 'high') {
+      out <- paste0(out, ' with strongly-correlated signal variables')
+    }
+    if (signal_correlation == 'low') {
+      out <- paste0(out, ' with weakly-correlated signal variables')
+      }
+    out <- paste0(out,
+                  # signal_label,
+                  '\nMultivariate ', err_dist, 'errors',
+                  '\nMean kernel selection rate across ', num_replicates,
+                  ' simulated data replicates')
   }
   return(out)
 }
@@ -286,9 +294,9 @@ title_phimr <- function(
   title_overlay_margins = margin(t = 0, l = 7),
   joint_subtitle_height = 0.15,
   subtitle_overlay_margins = margin(t = -10, b = 10, l = 7),
-  joint_legend_width = 0.25,
+  joint_legend_width = 0.35,
   joint_legend_height = 0.05,
-  joint_legend_margins = margin(l = -10, r = 10)) {
+  joint_legend_margins = margin(l = 20, r = -20)) {
   makeTitleSettings(
     joint_title, joint_subtitle,
     joint_title_size, joint_subtitle_size, joint_title_height,
@@ -297,22 +305,29 @@ title_phimr <- function(
 }
 
 makePhimrSubtitle <- function(type = "retention") {
-  if (x_type == 'cts') feature_type <- 'Continuous features, '
-  if (x_type == 'snp') feature_type <- 'Discrete (SNP) features (p = 567), '
+  if (x_type == 'cts') feature_type <- 'Continuous features'
+  if (x_type == 'snp') {
+    feature_type <- 'Simulated SNP set (p = 567)'
+    if (signal_correlation == 'high') feature_type <-
+        paste0(feature_type, ' with strongly-correlated signal variables')
+    if (signal_correlation == 'low') feature_type <-
+        paste0(feature_type, ' with weakly-correlated signal variables')
+    }
   if (error_distribution == 'cauchy') { err_dist <- 'Cauchy ' }
   if (error_distribution == 'normal') { err_dist <- 'normal ' }
-  signal_label <- paste0(100 * signal_strength, '% signal strength')
+  # signal_label <- paste0(100 * signal_strength, '% signal strength')
+  out <- paste0(feature_type,
+                # signal_label,
+                '\nMultivariate ', err_dist, 'errors')
   if (type == "retention") {
     out <- paste0(
-      feature_type, signal_label,
-      '\nMultivariate ', err_dist, 'errors',
-      '\nMean proportion of signal/noise variables retained by PhiMr across ',
+      out,
+      '\nMean share of signal/noise variables retained by PhiMr across ',
       num_replicates, ' simulated data replicates')
   }
   if (type == "density") {
     out <- paste0(
-      feature_type, signal_label,
-      '\nMultivariate ', err_dist, 'errors',
+      out,
       '\nMean value, across ', num_replicates, ' simulated data replicates, ',
       'of signal density after PhiMr relative to before',
       '\nSignal density measured as number of signal variables relative to total number of features')

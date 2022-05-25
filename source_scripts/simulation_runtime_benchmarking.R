@@ -16,7 +16,9 @@ for (n in values_for_sample_size) {
                 paste0(data_filename_stem, '_', join_string, '.Rdata'))
     }
     all_files_exist <-
-      sum(file.exists(data_filepath(c("amkat", "phimr", "kermat")))) == 3
+      sum(
+        file.exists(data_filepath(c("amkat", "stat", "cov", "phimr", "kermat")))
+        ) == 5
 
     # Check first whether data has already been simulated
     if (!all_files_exist | overwrite_existing_data) {

@@ -145,50 +145,66 @@ if (x_type == 'cts') {
 # Case 2: X is discrete SNP-set data
 if (x_type == 'snp') {
 
+  ### BASE ORIGINATING SET FOR SIGNAL VARIABLES ###
+
   # We begin by defining three regions of the reference SNP-set data that
   #  exhibit relatively low correlation among components
   region1 <- 132:(132 + 46)
   region2 <- 213:(213 + 30)
   region3 <- 505:(505 + 44)
-
-  # Subcase A: Sparse signal set (28 signals)
+  # Sparse signal set (28 signals)
   if (signal_density == 'sparse') {
-
-    # We select signal variables from among the regions previously defined
-    signal_set <- c(region1[c(39, 41:46)],
-                    region2[c(2:8)],
-                    region3[c(9, 10, 11, 13, 15, 16, 17, 36:40, 42, 43)])
-
+    if (signal_correlation == 'high') {
+      # Use the first 28 components of X as the base signal set
+      signal_set <- 1:28
+    } else {
+      # Select signal variables from among the low-correlation regions
+      signal_set <- c(region1[c(39, 41:46)],
+                      region2[c(2:8)],
+                      region3[c(9, 10, 11, 13, 15, 16, 17, 36:40, 42, 43)])
+    }
   }
-
-  # Subcase B: Dense signal set (123 signals)
+  # Dense signal set (122 signals)
+  # Note: originating set will have 123 elements; only 122 will be used
+  # for the actual signal set
   if (signal_density == 'dense') {
-
-    # Use the three previously defined regions as the set of signal variables
-    signal_set <- c(region1, region2, region3)
-
+    if (signal_correlation == 'high') {
+      # Use the first 123 components of X as the base signal set
+      signal_set <- 1:123
+    } else {
+      # Use the entirety of the three low-corr regions as the signal set
+      signal_set <- c(region1, region2, region3)
+    }
   }
+
+  ### Indices of Signal Set Used By Each Effect Function ###
+
+  # Descriptions of spatial patterns of indices pertain to their distribution
+  # within the signal set; note that the signal set may not correspond to a
+  # contiguous region of X
 
   # shared signals for all Y components
   #   clustered in groups of 2 with a 2-variable gap between each group
   signal_indices_shared <-
-    sort(union(seq(from = 1, to = length(signal_set), by = 4),
-               seq(from = 2, to = length(signal_set), by = 4)))
+    signal_set[sort(union(seq(from = 1, to = length(signal_set), by = 4),
+                          seq(from = 2, to = length(signal_set), by = 4)))]
 
   # additional signals for Y_2
   #   clustered as with the shared components, but offset by 4 variables,
   #   so that the clusters for Y_2 occupy the gaps between the shared clusters
   signal_indices_y2_only <-
-    sort(union(seq(from = 3, to = length(signal_set), by = 4),
-               seq(from = 4, to = length(signal_set), by = 4)))
+    signal_set[sort(union(seq(from = 3, to = length(signal_set), by = 4),
+                          seq(from = 4, to = length(signal_set), by = 4)))]
 
   # additional signals for Y_1
   #   subset of the additional signals for Y_2, located in left of each cluster
-  signal_indices_y1 <- seq(from = 3, to = length(signal_set), by = 4)
+  signal_indices_y1 <-
+    signal_set[seq(from = 3, to = length(signal_set), by = 4)]
 
   # additional signals for Y_3
   #   subset of the additional signals for Y_2, located in right of each cluster
-  signal_indices_y3 <- seq(from = 4, to = length(signal_set), by = 4)
+  signal_indices_y3 <-
+    signal_set[seq(from = 4, to = length(signal_set), by = 4)]
 
   # additional signals for Y_4
   #   same as the additional signals for Y_2
@@ -220,7 +236,7 @@ signal_indices_y4 <- union(signal_indices_shared, signal_indices_y4)
 if (x_type == 'cts') {
 
   # baseline global multiplier for signal strength
-  baseline_signal_strength <- switch(signal_density, sparse = 1, dense = 1 / 3 )
+  baseline_signal_strength <- switch(signal_density, sparse = 1, dense = 1 / 3)
 
   # signal strength multipliers for specific Y components
   strength_modifier_y1 <- 1
@@ -234,8 +250,10 @@ if (x_type == 'cts') {
 if (x_type == 'snp') {
 
   # baseline global multiplier for signal strength
-  baseline_signal_strength <- switch(signal_density,
-                                     sparse = 0.275, dense = 0.04)
+  baseline_signal_strength <-
+    switch(signal_correlation,
+           low = switch(signal_density, sparse = 0.325, dense = 0.08),
+           high = switch(signal_density, sparse = 0.275, dense = 0.04))
 
   # signal strength multipliers for specific Y components
   strength_modifier_y1 <- switch(signal_density, sparse = 0.54, dense = 0.72)
@@ -446,7 +464,7 @@ simulateDataCovariates <- function() {
   covariates_column1 <- rnorm(n)
 
   # Second covariate (Bernoulli)
-  covariates_column2 <- rbinom(n, size = 1, p = 0.4)
+  covariates_column2 <- rbinom(n, size = 1, prob = 0.4)
 
   return(cbind(covariates_column1, covariates_column2))
 
@@ -481,20 +499,10 @@ if (size_or_power == 'size') {
 
 # Case 2: Power simulation (H_1 is true)
 if (size_or_power == 'power') {
-  if (x_type == "cts") {
-    simulateDataY <- function(x, covariates) {
-      x_effects_on_y <- computeEffectOnY(x)
-      covariate_effects_on_y <- covariates %*% covariate_coefficient_matrix
-      epsilon <- simulateDataEpsilon()
-      return(covariate_effects_on_y + x_effects_on_y + epsilon)
-    }
-  }
-  if (x_type == "snp") {
-    simulateDataY <- function(x, covariates) {
-      x_effects_on_y <- computeEffectOnY(x[ , signal_set])
-      covariate_effects_on_y <- covariates %*% covariate_coefficient_matrix
-      epsilon <- simulateDataEpsilon()
-      return(covariate_effects_on_y + x_effects_on_y + epsilon)
-    }
+  simulateDataY <- function(x, covariates) {
+    x_effects_on_y <- computeEffectOnY(x)
+    covariate_effects_on_y <- covariates %*% covariate_coefficient_matrix
+    epsilon <- simulateDataEpsilon()
+    return(covariate_effects_on_y + x_effects_on_y + epsilon)
   }
 }

@@ -17,7 +17,7 @@ error_correlation_strength <- 0
 
 # File for Plot data
 bench_plotdata_file <- file.path(
-  dir_data_adaptive_within,
+  dir_data_runtime_benchmarking,
   paste0("b", num_permutations, "_m", num_replicates, ".Rdata"))
 
 # Files for Plots
@@ -25,14 +25,21 @@ bench_plot_filename_stem <- paste0("b", num_permutations, "_m", num_replicates)
 bench_file_kermat <-
   file.path(dir_plots_runtime_benchmarking,
             paste0(bench_plot_filename_stem, "_kermat.pdf"))
+bench_file_stat <-
+  file.path(dir_plots_runtime_benchmarking,
+            paste0(bench_plot_filename_stem, "_stat.pdf"))
 bench_file_phimr <-
   file.path(dir_plots_runtime_benchmarking,
             paste0(bench_plot_filename_stem, "_phimr.pdf"))
 bench_file_amkat <-
   file.path(dir_plots_runtime_benchmarking,
             paste0(bench_plot_filename_stem, "_amkat.pdf"))
+bench_file_cov <-
+  file.path(dir_plots_runtime_benchmarking,
+            paste0(bench_plot_filename_stem, "_cov.pdf"))
 
 bench_plot_files_exist <-
   file.exists(bench_file_kermat) &
+  file.exists(bench_file_stat) &
   file.exists(bench_file_phimr) &
   file.exists(bench_file_amkat)

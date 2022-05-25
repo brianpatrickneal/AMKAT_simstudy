@@ -15,27 +15,34 @@ for (error_distribution in values_for_error_distribution) {
                                      'LaplacesDemon')
   }
   for (signal_strength in values_for_signal_strength) {
-    for (signal_density in values_for_signal_density) {
-      for (error_correlation_strength in values_for_error_corr_strength) {
-        for (n in values_for_sample_size) {
-          for (p in values_for_num_x_variables) {
+    for (signal_correlation in values_for_snp_signal_corr) {
+      for (signal_density in values_for_signal_density) {
+        for (error_correlation_strength in values_for_error_corr_strength) {
+          for (n in values_for_sample_size) {
+            for (p in values_for_num_x_variables) {
 
-            data_filename_stem <-
-              paste0('m', num_replicates, '_', x_type, '_', error_distribution,
-                     '_s', signal_strength * 100, '_', signal_density,
-                     '_c', error_correlation_strength * 100, '_n', n, '_p', p)
-            data_filepath <- file.path(dir_data_adaptive_across,
-                                       paste0(data_filename_stem, '.Rdata'))
+              # File for simulated data
+              part1 <- paste0('m', num_replicates, '_', x_type, '_',
+                              error_distribution, '_s', signal_strength * 100)
+              if (x_type == 'snp') {
+                part2 <- paste0('_sc-', signal_correlation)
+              } else { part2 <- character() }
+              stem <-
+                paste0(part1, part2, '_', signal_density,
+                       '_c', error_correlation_strength * 100, '_n', n, '_p', p)
+              data_filepath <- file.path(dir_data_adaptive_across,
+                                         paste0(stem, '.Rdata'))
 
-            # Check first whether data has already been simulated
-            if (!file.exists(data_filepath) | overwrite_existing_data) {
+              # Check first whether data has already been simulated
+              if (!file.exists(data_filepath) | overwrite_existing_data) {
 
-              source(file.path(dir_src, 'initialize_simulation_scenario.R'))
+                source(file.path(dir_src, 'initialize_simulation_scenario.R'))
 
-              source(file.path(dir_src, 'simulate_data_adaptive_across.R'))
+                source(file.path(dir_src, 'simulate_data_adaptive_across.R'))
 
-              save(list = c('selected_kernels', 'selected_x_columns'),
-                   file = data_filepath)
+                save(list = c('selected_kernels', 'selected_x_columns'),
+                     file = data_filepath)
+              }
             }
           }
         }

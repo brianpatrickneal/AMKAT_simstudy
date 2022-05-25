@@ -2,9 +2,13 @@
 # Settings for Simulating Data --------------------------------------------
 
 # Default parameter values
-if (size_or_power == 'size') values_for_signal_strength <- 1
-if (size_or_power == 'size') values_for_signal_density <- 'sparse'
+if (size_or_power == 'size') {
+  values_for_signal_strength <- 1
+  values_for_signal_density <- 'sparse'
+  values_for_snp_signal_corr <- 'high'
+}
 if (x_type == 'snp') values_for_num_x_variables <- 567
+if (x_type == 'cts') values_for_snp_signal_corr <- 'high'
 
 # Max number of test statistics to use for AMKAT with PhiMr filter
 num_test_statistics <- 128L

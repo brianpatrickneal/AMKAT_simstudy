@@ -34,6 +34,47 @@ if (!file.exists(data_filepath("kermat")) | overwrite_existing_data) {
 
 
 
+# Computing single-trait standardized test stat
+if (!file.exists(data_filepath("stat")) | overwrite_existing_data) {
+  stat_reps <- num_replicates * 400 # executions per worker
+  set.seed(seed_value)
+  times_stat <- as.vector(
+    foreach::foreach(
+      chunk = iterators::iter(iterator, chunksize = chunk_size), .combine = cbind,
+      .packages = packages_to_pass_to_foreach) %dopar% { # pass chunks to workers
+        foreach(i = chunk, .combine = cbind) %do% { # worker iterates over chunk
+          kermat <- generateKernelMatrix(x, "lin")
+          microbenchmark(
+            AMKAT:::.estimateSignalToNoise(
+              null_residuals[ , 1], null_standard_errors[[1]], kermat),
+            times = stat_reps)$time
+        }
+      }
+  )
+  save(times_stat, file = data_filepath("stat"))
+}
+
+
+
+# Covariate adjustment
+if (!file.exists(data_filepath("cov")) | overwrite_existing_data) {
+  cov_reps <- num_replicates * 10000 # executions per worker
+  set.seed(seed_value)
+  times_cov <- as.vector(
+    foreach::foreach(
+      chunk = iterators::iter(iterator, chunksize = chunk_size), .combine = cbind,
+      .packages = packages_to_pass_to_foreach) %dopar% { # pass chunks to workers
+        foreach(i = chunk, .combine = cbind) %do% { # worker iterates over chunk
+          microbenchmark(AMKAT:::.fitAmkatNullModel(y, x, covariates),
+                         times = cov_reps)$time
+        }
+      }
+  )
+  save(times_cov, file = data_filepath("cov"))
+}
+
+
+
 # PhiMr filter
 if (!file.exists(data_filepath("phimr")) | overwrite_existing_data) {
   phimr_reps <- num_replicates * 400

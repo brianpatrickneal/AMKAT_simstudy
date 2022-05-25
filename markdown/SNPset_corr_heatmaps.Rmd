@@ -1,11 +1,18 @@
 ---
-title: "Simulated SNP Set Correlation Heatmaps"
-author: "Brian Neal"
-date: "3/29/2022"
+title: "Simulated SNP Set and Corresponding Signal Sets"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
   html_document:
     toc: yes
     toc_float: yes
+    toc_depth: 4
+  github_document:
+    math_method:
+      engine: webtex
+      url: http://chart.apis.google.com/chart?cht=tx&chl=
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-In this document, we exhibit correlation heatmaps for the simulated SNP set used in our simulation study, as well as correlation heatmaps for each of the two sets of signal variables (sparse set and dense set) for this SNP set in settings corresponding to $H_1$.
+In this document, we provide a detailed look at the different signal sets used in our simulations; we examine the specific indices of $\boldsymbol{X}$ that comprise each signal set, the breakdown of which signals contribute to the effect of $\boldsymbol{X}$ on each component of $\boldsymbol{Y}$, and the correlation structure of each signal set.  We also generate a correlation heatmap for the simulated SNP set used in our simulation study.
 
 
 
@@ -44,7 +51,6 @@ heatmap <- function(X, tag){
 ```
 
 
-
 ## Full SNP set
 
 We begin by initializing a scenario where $\boldsymbol{X}$ represents SNP-set data, using the parameters seen below.
@@ -60,6 +66,7 @@ x_type <- "snp"
 error_distribution <- "normal"
 signal_strength <- 1
 signal_density <- "sparse"
+signal_correlation <- "low"
 error_correlation_strength <- 0.5
 n <- 1000
 p <- 567
@@ -82,63 +89,381 @@ X <- simulateDataX()
 
 We produce a sample correlation heatmap for the simulated data:
 
-```{r cor_full}
+```{r }
 
 heatmap(X, "Full SNP-set")
 
 ```
 
-## Sparse Signal Set
+## Signal Sets with Weakly Correlated Components
 
-The scenario previously initialized corresponds to $H_1$, with 28 signal variables present among the 567 SNPs (referred to as the sparse setting).  We check the indices of $\boldsymbol{X}$ that correspond to the signal variables:
+We consider the two signal sets comprised of SNPs among which the pairwise correlation was typically weak.
 
-```{r sparse_ind}
+### Sparse Signal Set (28 signals)
 
-signal_set
+The scenario initialized for the full SNP set in the previous section corresponds to $H_1$, with 28 signal variables present among the 567 SNPs (referred to as the sparse setting).  We check the indices of $\boldsymbol{X}$ that correspond to the signal variables:
 
+```{r }
+all_signals <- sort(unique(c(
+  signal_indices_shared, signal_indices_y1, signal_indices_y2_only, 
+  signal_indices_y3, signal_indices_y4)))
+
+all_signals
 ```
+
+We check the total number of variables in the signal set:
+```{r}
+length(all_signals)
+```
+
+
+We check both which and how many signal variables affect all four components of $\boldsymbol{Y}$: 
+```{r}
+# X variables affecting all Y components:
+signal_indices_shared
+```
+```{r}
+# Number of X variables affecting all Y components:
+length(signal_indices_shared)
+```
+
+
+We check the signal variables affecting $Y_1$:
+```{r}
+# X variables affecting Y_1:
+sort(signal_indices_y1)
+```
+```{r}
+# Number of X variables affecting Y_1:
+length(signal_indices_y1)
+```
+
+We check the signal variables affecting $Y_2$. 
+```{r}
+# X variables affecting Y_2:
+sort(unique(c(signal_indices_shared, signal_indices_y2_only)))
+```
+
+```{r}
+# Number of X variables affecting Y_2:
+length(
+  sort(unique(c(signal_indices_shared, signal_indices_y2_only))))
+```
+
+We check the signal variables affecting $Y_3$:
+```{r}
+# X variables affecting Y_3:
+sort(signal_indices_y3)
+```
+```{r}
+# Number of X variables affecting Y_3:
+length(signal_indices_y3)
+```
+
+We check the signal variables affecting $Y_4$:
+```{r}
+# X variables affecting Y_4:
+sort(signal_indices_y4)
+```
+```{r}
+# Number of X variables affecting Y_4:
+length(signal_indices_y4)
+```
+
 
 A correlation heatmap for the SNPs in the signal set is seen below.
 
-```{r cor_sparse}
 
-heatmap(X[ , signal_set], "Sparse signal set")
+```{r }
+
+heatmap(X[ , all_signals], "Sparse signal set")
 
 ```
 
 
-## Dense Signal Set
+### Dense Signal Set (122 signals)
 
-We now initialize a scenario for the dense setting, which involves 123 signal variables among the 567 SNPs:
+We now initialize a scenario for the dense setting, which involves 122 signal variables among the 567 SNPs:
 
-```{r init_dense}
+```{r }
 
 signal_density <- "dense"
-source(file.path(dirname(dirname(rstudioapi::getActiveDocumentContext()$path)), 
-                 'source_scripts', 'initialize_simulation_scenario.R'))
+source(file.path(dir_src, 'initialize_simulation_scenario.R'))
 
 ```
 
 As before, we simulate data for the scenario:
 
-```{r sim_dense}
+```{r }
 
 X <- simulateDataX()
 
 ```
-We check the indices of the signal variables...
+We check the indices of $\boldsymbol{X}$ that correspond to the signal variables:
 
-```{r signal_ind_dense}
+```{r }
+all_signals <- sort(unique(c(
+  signal_indices_shared, signal_indices_y1, signal_indices_y2_only, 
+  signal_indices_y3, signal_indices_y4)))
 
-signal_set
+all_signals
+```
+
+We check the total number of variables in the signal set:
+```{r}
+length(all_signals)
+```
+
+
+We check both which and how many signal variables affect all four components of $\boldsymbol{Y}$: 
+```{r}
+# X variables affecting all Y components:
+signal_indices_shared
+```
+```{r}
+# Number of X variables affecting all Y components:
+length(signal_indices_shared)
+```
+
+
+
+We check the signal variables affecting $Y_1$:
+```{r}
+# X variables affecting Y_1:
+sort(signal_indices_y1)
+```
+```{r}
+# Number of X variables affecting Y_1:
+length(signal_indices_y1)
+```
+
+We check the signal variables affecting $Y_2$. 
+```{r}
+# X variables affecting Y_2:
+sort(unique(c(signal_indices_shared, signal_indices_y2_only)))
+```
+
+```{r}
+# Number of X variables affecting Y_2:
+length(
+  sort(unique(c(signal_indices_shared, signal_indices_y2_only))))
+```
+
+We check the signal variables affecting $Y_3$:
+```{r}
+# X variables affecting Y_3:
+sort(signal_indices_y3)
+```
+```{r}
+# Number of X variables affecting Y_3:
+length(signal_indices_y3)
+```
+
+We check the signal variables affecting $Y_4$:
+```{r}
+# X variables affecting Y_4:
+sort(signal_indices_y4)
+```
+```{r}
+# Number of X variables affecting Y_4:
+length(signal_indices_y4)
+```
+
+
+A correlation heatmap for the SNPs in the signal set is seen below.
+
+
+```{r }
+
+heatmap(X[ , all_signals], "Dense signal set")
 
 ```
 
-...and plot a correlation heatmap for the signal set:
 
-```{r cor_dense}
 
-heatmap(X[ , signal_set], "Sparse signal set")
+
+
+
+## Signal Sets with Strongly Correlated Components
+
+We consider the two signal sets comprised of SNPs among which the pairwise correlation was typically strong. The variables for each of these signal sets comprise a contiguous region at the beginning of the SNP set.
+
+### Sparse Signal Set (28 signals)
+
+We initialize the simulation scenario and simulate the data:
+
+```{r }
+signal_correlation <- "high"
+signal_density <- "sparse"
+source(file.path(dir_src, 'initialize_simulation_scenario.R'))
+X <- simulateDataX()
+```
+We check the indices of $\boldsymbol{X}$ that correspond to the signal variables:
+
+```{r }
+all_signals <- sort(unique(c(
+  signal_indices_shared, signal_indices_y1, signal_indices_y2_only, 
+  signal_indices_y3, signal_indices_y4)))
+
+all_signals
+```
+
+We check the total number of variables in the signal set:
+```{r}
+length(all_signals)
+```
+
+
+We check both which and how many signal variables affect all four components of $\boldsymbol{Y}$: 
+```{r}
+# X variables affecting all Y components:
+signal_indices_shared
+```
+```{r}
+# Number of X variables affecting all Y components:
+length(signal_indices_shared)
+```
+
+
+
+We check the signal variables affecting $Y_1$:
+```{r}
+# X variables affecting Y_1:
+sort(signal_indices_y1)
+```
+```{r}
+# Number of X variables affecting Y_1:
+length(signal_indices_y1)
+```
+
+We check the signal variables affecting $Y_2$. 
+```{r}
+# X variables affecting Y_2:
+sort(unique(c(signal_indices_shared, signal_indices_y2_only)))
+```
+
+```{r}
+# Number of X variables affecting Y_2:
+length(
+  sort(unique(c(signal_indices_shared, signal_indices_y2_only))))
+```
+
+We check the signal variables affecting $Y_3$:
+```{r}
+# X variables affecting Y_3:
+sort(signal_indices_y3)
+```
+```{r}
+# Number of X variables affecting Y_3:
+length(signal_indices_y3)
+```
+
+We check the signal variables affecting $Y_4$:
+```{r}
+# X variables affecting Y_4:
+sort(signal_indices_y4)
+```
+```{r}
+# Number of X variables affecting Y_4:
+length(signal_indices_y4)
+```
+
+A correlation heatmap for the SNPs in the signal set is seen below.
+
+
+```{r }
+
+heatmap(X[ , all_signals], "Sparse signal set")
 
 ```
+
+### Dense Signal Set (122 signals)
+
+We initialize the simulation scenario and simulate the data:
+
+```{r }
+signal_density <- "dense"
+source(file.path(dir_src, 'initialize_simulation_scenario.R'))
+X <- simulateDataX()
+```
+We check the indices of $\boldsymbol{X}$ that correspond to the signal variables:
+
+```{r }
+all_signals <- sort(unique(c(
+  signal_indices_shared, signal_indices_y1, signal_indices_y2_only, 
+  signal_indices_y3, signal_indices_y4)))
+
+all_signals
+```
+
+We check the total number of variables in the signal set:
+```{r}
+length(all_signals)
+```
+
+
+We check both which and how many signal variables affect all four components of $\boldsymbol{Y}$: 
+```{r}
+# X variables affecting all Y components:
+signal_indices_shared
+```
+```{r}
+# Number of X variables affecting all Y components:
+length(signal_indices_shared)
+```
+
+
+
+We check the signal variables affecting $Y_1$:
+```{r}
+# X variables affecting Y_1:
+sort(signal_indices_y1)
+```
+```{r}
+# Number of X variables affecting Y_1:
+length(signal_indices_y1)
+```
+
+We check the signal variables affecting $Y_2$. 
+```{r}
+# X variables affecting Y_2:
+sort(unique(c(signal_indices_shared, signal_indices_y2_only)))
+```
+
+```{r}
+# Number of X variables affecting Y_2:
+length(
+  sort(unique(c(signal_indices_shared, signal_indices_y2_only))))
+```
+
+We check the signal variables affecting $Y_3$:
+```{r}
+# X variables affecting Y_3:
+sort(signal_indices_y3)
+```
+```{r}
+# Number of X variables affecting Y_3:
+length(signal_indices_y3)
+```
+
+We check the signal variables affecting $Y_4$:
+```{r}
+# X variables affecting Y_4:
+sort(signal_indices_y4)
+```
+```{r}
+# Number of X variables affecting Y_4:
+length(signal_indices_y4)
+```
+
+
+A correlation heatmap for the SNPs in the signal set is seen below.
+
+
+```{r }
+
+heatmap(X[ , all_signals], "Dense signal set")
+
+```
+
 

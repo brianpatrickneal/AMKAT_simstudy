@@ -80,6 +80,9 @@ makeBarPlot <- function(
     scale_fill_manual(name = legend_title,
                       labels = group_labels,
                       values = color_scheme) +
+    theme(axis.ticks.x = element_blank(),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank()) +
     theme_settings
 
   return(out)
@@ -500,20 +503,27 @@ makePlotSubtitle <- function(title_settings = makeTitleSettings()) {
 makeScenarioDesc <- function() {
 
   if (x_type == 'cts') feature_type <- 'Continuous features'
-  if (x_type == 'snp') feature_type <- 'Discrete (SNP) features'
+  if (x_type == 'snp') feature_type <- 'Simulated SNP set'
   if (error_distribution == 'cauchy') { err_dist <- 'Cauchy' }
   if (error_distribution == 'normal') { err_dist <- 'normal' }
   if (x_type == 'cts') num_signals <-
       switch(signal_density, 'sparse' = 7L, 'dense' = 80L)
   if (x_type == 'snp') num_signals <-
-      switch(signal_density, 'sparse' = 28L, 'dense' = 123L)
-  signal_label <- paste0(num_signals, "-variable signal at ",
-                         100 * signal_strength, '% strength')
+      switch(signal_density, 'sparse' = 28L, 'dense' = 122L)
+  signal_label <- paste0(num_signals, "-variable signal set"
+                         # " at ", 100 * signal_strength, '% strength',
+  )
+  if (x_type == 'snp') {
+    if (signal_correlation == 'high') signal_label <-
+        paste0(signal_label, ' with strongly-correlated components')
+    if (signal_correlation == 'low') signal_label <-
+        paste0(signal_label, ' with weakly-correlated components')
+  }
   if (error_correlation_strength == 0) {
-    error_corr_label <- 'independent errors'
-  } else {
-    error_corr_label <- paste0(
-      'correlated errors (\u00B1 ', error_correlation_strength, ' pairwise)')
+    error_corr_label <- 'errors with uncorrelated components'
+  } else { # \u00B1 for plus/minus
+    error_corr_label <-
+      paste0('errors with correlated components (\u00B1', '0.5 pairwise)')
   }
   scenario_desc <- paste0(
     feature_type, ', ', signal_label, ', ', 'p = ', p, ', n = ', n,
@@ -598,19 +608,23 @@ all_shapes <- c(15, # solid square
 # Power -------------------------------------------------------------------
 
 powerPlotFiles <- function() {
-  plotdata_filename <-
-    paste0('m', num_replicates, '_', x_type, '_', error_distribution,
-           '_s', signal_strength * 100, '_p', p, '.Rdata')
-  file_plotdata <- file.path(dir_plotdata_power, plotdata_filename)
-  plot_filename_stem <-
-    paste0('m', num_replicates, '_', x_type, '_', error_distribution,
-           '_s', signal_strength * 100, '_p', p)
-  file_mainplot <- file.path(dir_plots_power,
-                             paste0(plot_filename_stem, '.pdf'))
-  file_Qplot <- file.path(dir_plots_power,
-                          paste0(plot_filename_stem, '_Q.pdf'))
-  file_Qbarplot <- file.path(dir_plots_power,
-                             paste0(plot_filename_stem, '_Qbar.pdf'))
+
+  # Filename stem describing set of scenarios for current plots
+  part1 <- paste0('m', num_replicates, '_', x_type, '_',
+                  error_distribution, '_s', signal_strength * 100)
+  if (x_type == 'snp') {
+    part2 <- paste0('_sc-', signal_correlation)
+  } else { part2 <- character() }
+  stem <- paste0(part1, part2, '_p', p)
+
+  # file containing plot data
+  file_plotdata <- file.path(dir_plotdata_power, paste0(stem, '.Rdata'))
+
+  # files for plots
+  file_mainplot <- file.path(dir_plots_power, paste0(stem, '.pdf'))
+  file_Qplot <- file.path(dir_plots_power, paste0(stem, '_Q.pdf'))
+  file_Qbarplot <- file.path(dir_plots_power, paste0(stem, '_Qbar.pdf'))
+
   return(list("plotdata" = file_plotdata,
               "main" = file_mainplot,
               "qplot" = file_Qplot,
@@ -624,16 +638,24 @@ powerPlotFiles <- function() {
 makePowerPlotDesc <- function() {
 
   if (x_type == 'cts') feature_type <- 'Continuous features'
-  if (x_type == 'snp') feature_type <- 'Discrete (SNP) features'
-  if (error_distribution == 'cauchy') { err_dist <- 'Cauchy' }
-  if (error_distribution == 'normal') { err_dist <- 'normal' }
+  if (x_type == 'snp') feature_type <- 'Simulated SNP set'
+  plot_desc <- paste0("\n", feature_type, ' (p = ', p, ')')
+
+  if (x_type == 'snp') {
+    if (signal_correlation == 'high') plot_desc <-
+        paste0(plot_desc, ' with strongly-correlated signal variables')
+    if (signal_correlation == 'low') plot_desc <-
+        paste0(plot_desc, ' with weakly-correlated signal variables')
+  }
+
+  # if (error_distribution == 'cauchy') { err_dist <- 'Cauchy' }
+  # if (error_distribution == 'normal') { err_dist <- 'normal' }
+  # plot_desc <- paste0(plot_desc, '\nMultivariate ', err_dist, ' errors'))
 
   plot_desc <-  paste0(
-    "\n", feature_type, ' (p = ', p, '), ',
-    'multivariate ', err_dist, ' errors, ',
-    100 * signal_strength, '% signal strength',
-    '\nEach value based on ', num_replicates,
-    ' simulated data replicates; ',
+    plot_desc,
+    # '\n', 100 * signal_strength, '% signal strength',
+    '\nEach value based on ', num_replicates, ' simulated data replicates; ',
     'AMKAT P-values estimated using ', num_permutations, ' permutations')
 
   return(plot_desc)
@@ -662,10 +684,10 @@ makeCompoundPowerPlot <- function(
   corr_labels <- rep('NA', length(corr_values))
   for (i in seq_along(corr_values)) {
     if (corr_values[[i]] == 0) {
-      corr_labels[[i]] <- 'Independent errors'
+      corr_labels[[i]] <- 'Uncorrelated error components'
     } else {
-      corr_labels[[i]] <-
-        paste0('Correlated errors (\u00B1 ', corr_values[[i]], ' pairwise)')
+      corr_labels[[i]] <- expression(paste(
+        'Correlated error components (', rho, ' = 0.5)'))
     }
   }
   plot_sparse_corr1 <- makePowerPlot(
@@ -716,7 +738,8 @@ makeCompoundPowerBarPlot <- function(
   title_settings = title_power(
     joint_title = "Simulated Power: Comparison of AMKAT Variations",
     joint_title_height = powerTitleHeight(length(unique(data$corr))),
-    joint_subtitle_height = powerSubtitleHeight(length(unique(data$corr))))) {
+    joint_subtitle_height = powerSubtitleHeight(length(unique(data$corr))),
+    joint_legend_width = 0.2)) {
 
   if (test_methods == "comparison") {
     legend_title <- "Testing Method"
@@ -726,29 +749,34 @@ makeCompoundPowerBarPlot <- function(
   signal_values <- sort(unique(data$signals))
   corr_values <- sort(unique(data$corr))
   group_labels <- levels(data$method)
+  sample_sizes <- sort(unique(data$sample_size))
   corr_labels <- rep('NA', length(corr_values))
   for (i in seq_along(corr_values)) {
     if (corr_values[[i]] == 0) {
-      corr_labels[[i]] <- 'Independent errors'
+      corr_labels[[i]] <- 'Uncorrelated error components'
     } else {
-      corr_labels[[i]] <-
-        paste0('Correlated errors (\u00B1 ', corr_values[[i]], ' pairwise)')
+      corr_labels[[i]] <- expression(paste(
+        'Correlated error components (', rho, ' = 0.5)'))
     }
   }
   plot_sparse_corr1 <- makePowerBarPlot(
     data, corr_values, corr_labels, corr_index = 1, signal_values[[1]],
-    legend_title, color_scheme, group_labels, y_scale_max, theme_settings)
+    legend_title, color_scheme, group_labels, y_scale_max, theme_settings,
+    sample_sizes)
   plot_dense_corr1 <- makePowerBarPlot(
     data, corr_values, corr_labels, corr_index = 1, signal_values[[2]],
-    legend_title, color_scheme, group_labels, y_scale_max, theme_settings)
+    legend_title, color_scheme, group_labels, y_scale_max, theme_settings,
+    sample_sizes)
 
   if (length(corr_values) == 2) { # Four-plot layout
     plot_sparse_corr2 <- makePowerBarPlot(
       data, corr_values, corr_labels, corr_index = 2, signal_values[[1]],
-      legend_title, color_scheme, group_labels, y_scale_max, theme_settings)
+      legend_title, color_scheme, group_labels, y_scale_max, theme_settings,
+      sample_sizes)
     plot_dense_corr2 <- makePowerBarPlot(
       data, corr_values, corr_labels, corr_index = 2, signal_values[[2]],
-      legend_title, color_scheme, group_labels, y_scale_max, theme_settings)
+      legend_title, color_scheme, group_labels, y_scale_max, theme_settings,
+      sample_sizes)
     joint_plot <- cowplot::plot_grid(
       plot_sparse_corr1 + theme(legend.position = "none"),
       plot_sparse_corr2 + theme(legend.position = "none") +
@@ -782,7 +810,7 @@ makePowerPlot <- function(
           (plot_data$signals == num_signals)), ],
     xvar = "sample_size", yvar = "value", groupvar = "method",
     color_scheme = color_scheme, shape_scheme = shape_scheme,
-    plot_title = paste0(num_signals, '-variable signal'),
+    plot_title = paste0(num_signals, '-variable signal set'),
     plot_subtitle = corr_labels[[corr_index]],
     plot_caption = NULL,
     x_axis_title = "Sample Size", y_axis_title = "Power",
@@ -795,7 +823,7 @@ makePowerPlot <- function(
 
 makePowerBarPlot <- function(
   plot_data, corr_values, corr_labels, corr_index, num_signals, legend_title,
-  color_scheme, group_labels, y_scale_max, theme_settings) {
+  color_scheme, group_labels, y_scale_max, theme_settings, x_breaks) {
 
   makeBarPlot(
     data = plot_data[
@@ -804,15 +832,15 @@ makePowerBarPlot <- function(
           (plot_data$signals == num_signals)), ],
     xvar = "sample_size", yvar = "value", groupvar = "method", group_labels,
     color_scheme,
-    plot_title = paste0(num_signals, '-variable signal'),
+    plot_title = paste0(num_signals, '-variable signal set'),
     plot_subtitle = corr_labels[[corr_index]],
     plot_caption = NULL,
     x_axis_title = "Sample Size", y_axis_title = "Power",
     legend_title, theme_settings
   ) +
     scale_y_continuous(breaks = seq(from = 0, to = y_scale_max, by = 0.1),
-                       limits = c(0, y_scale_max)) +
-    scale_x_continuous(breaks = NULL, minor_breaks = NULL)
+                       limits = c(0, y_scale_max), expand = c(0, 0)) +
+    scale_x_continuous(breaks = x_breaks, minor_breaks = NULL)
 }
 
 
@@ -821,19 +849,18 @@ makePowerBarPlot <- function(
 # Generate list of file paths for plot data and plots
 adaptiveAcrossPlotFiles <- function() {
 
-  plotdata_filename_stem <-
-    paste0('m', num_replicates, '_', x_type, '_', error_distribution, '_s',
-           signal_strength * 100, '_plotdata')
+  # file path for output plot data
+  part1 <- paste0('m', num_replicates, '_', x_type, '_',
+                  error_distribution, '_s', signal_strength * 100)
+  if (x_type == 'snp') {
+    stem <- paste0(part1, '_sc-', signal_correlation)
+  } else { stem <- part1 }
   plotdata_file <- file.path(dir_data_adaptive_across,
-                             paste0(plotdata_filename_stem, '.Rdata'))
+                             paste0(stem, '_plotdata.Rdata'))
 
-  kerplot_filename_stem <- phimrplot_filename_stem <-
-    paste0(
-      'm', num_replicates, '_', x_type, '_', error_distribution,
-      '_s', signal_strength * 100)
   if (x_type == "cts") {
-    kerplot_filename_vec <- paste0(
-      kerplot_filename_stem, '_c', values_for_error_corr_strength * 100)
+    kerplot_filename_vec <-
+      paste0(stem, '_c', values_for_error_corr_strength * 100)
     # matrix of file paths for kernel selection plots
     #  cols index correlation, rows index Y variable
     kerplot_files <-
@@ -845,17 +872,14 @@ adaptiveAcrossPlotFiles <- function() {
   }
   if (x_type == "snp") {
     # vector of file paths for kernel selection plots
-    kerplot_files <- file.path(
-      dir_plots_kernel_selection,
-      paste0(kerplot_filename_stem, '_', y_col_labels, '.pdf'))
+    kerplot_files <- file.path(dir_plots_kernel_selection,
+                               paste0(stem, '_', y_col_labels, '.pdf'))
   }
   phimrplot_retention_file <-
-    file.path(dir_plots_feature_selection,
-              paste0(phimrplot_filename_stem, '_keeprates.pdf'))
+    file.path(dir_plots_feature_selection, paste0(stem, '_keeprates.pdf'))
 
   phimrplot_density_file <-
-    file.path(dir_plots_feature_selection,
-              paste0(phimrplot_filename_stem, '_density.pdf'))
+    file.path(dir_plots_feature_selection, paste0(stem, '_density.pdf'))
 
   return(list("plotdata" = plotdata_file,
               "kerplots" = kerplot_files, # character matrix/vector
@@ -920,7 +944,8 @@ makeKerSelPlots <- function(
       data, rho = 0.5, signal_values[[1]], 567, color_scheme, shape_scheme,
       line_size, point_size, theme_settings, sample_sizes, title = NULL,
       subtitle =
-        paste0('Correlated error components')) +
+        expression(paste(
+          'Correlated error components (', rho, ' = 0.5)'))) +
       ylab(NULL)
     plot21 <- makeKerSelPlot(
       data, rho = 0, signal_values[[2]], 567, color_scheme, shape_scheme,
@@ -930,7 +955,8 @@ makeKerSelPlots <- function(
       data, rho = 0.5, signal_values[[2]], 567, color_scheme, shape_scheme,
       line_size, point_size, theme_settings, sample_sizes, title = NULL,
       subtitle =
-        paste0('Correlated error components')) +
+        expression(paste(
+          'Correlated error components (', rho, ' = 0.5)'))) +
       ylab(NULL)
     joint_plot <- cowplot::plot_grid(
       plot11 + theme(legend.position = "none"),
@@ -948,7 +974,7 @@ makeKerSelPlots <- function(
 makeKerSelPlot <- function(
   data, rho, n_signals, p, color_scheme, shape_scheme, line_size,
   point_size, theme_settings, x_breaks,
-  title = paste0(n_signals, '-variable signal'),
+  title = paste0(n_signals, '-variable signal set'),
   subtitle = paste0('p = ', p)) {
 
   makeLinePlot(
@@ -971,56 +997,43 @@ makePhimrRetentionPlots <- function(data) {
   signal_values <- sort(unique(data$signals))
   corr_values <- sort(unique(data$rho))
   sample_sizes <- sort(unique(data$samplesize))
-  corr_labels <- rep('NA', length(corr_values))
-  for (i in seq_along(corr_values)) {
-    if (corr_values[[i]] == 0) {
-      corr_labels[[i]] <- 'errors with uncorrelated components'
-    } else {
-      corr_labels[[i]] <-
-        paste0('errors with correlated components (\u00B1', '0.5 pairwise)')
-    }
-  }
   plot_sparse_corr1 <- phimrRetentionPlot(
-    data, corr_values, corr_labels, corr_index = 1, signal_values[[1]],
-    sample_sizes)
+    data, corr_values[[1]], signal_values[[1]], sample_sizes)
   plot_dense_corr1 <- phimrRetentionPlot(
-    data, corr_values, corr_labels, corr_index = 1, signal_values[[2]],
-    sample_sizes)
+    data, corr_values[[1]], signal_values[[2]], sample_sizes)
   plot_sparse_corr2 <- phimrRetentionPlot(
-    data, corr_values, corr_labels, corr_index = 2, signal_values[[1]],
-    sample_sizes) + labs(title = NULL) + ylab(NULL)
+    data, corr_values[[2]], signal_values[[1]], sample_sizes) +
+    labs(title = NULL) + ylab(NULL)
   plot_dense_corr2 <- phimrRetentionPlot(
-    data, corr_values, corr_labels, corr_index = 2, signal_values[[2]],
-    sample_sizes) + labs(title = NULL) + ylab(NULL)
+    data, corr_values[[2]], signal_values[[2]], sample_sizes) +
+    labs(title = NULL) + ylab(NULL)
   joint_plot <- cowplot::plot_grid(
     plot_sparse_corr1 + theme(legend.position = "none"),
     plot_sparse_corr2 + theme(legend.position = "none"),
-    plot_dense_corr1 + theme(legend.position = "none") ,
+    plot_dense_corr1 + theme(legend.position = "none"),
     plot_dense_corr2 + theme(legend.position = "none"),
     ncol = 2, labels = rep("", 4), align = "vh")
   # Overlay title, subtitle and legend onto joint plot and return
   return(overlayJointPlotElements(
     joint_plot, title_settings = title_phimr(),
     theme_settings = theme_phimr(), legend_from = plot_sparse_corr1))
-
 }
 
-phimrRetentionPlot <- function(
-  data, corr_values, corr_labels, corr_index, num_signals, x_breaks) {
+phimrRetentionPlot <- function(data, corr_value, num_signals, x_breaks) {
   makeLinePlot(
-    data[which(
-      (data$rho == corr_values[[corr_index]]) &
-        (data$signals == num_signals)), ],
+    data[which((data$rho == corr_value) & (data$signals == num_signals)), ],
     xvar = "samplesize", yvar = "value", groupvar = "linegroup",
     color_scheme = colors_phimr(n_colors = length(unique(data$featdim))),
     shape_scheme = shapes_phimr,
-    plot_title = paste0(num_signals, '-variable signal'),
-    plot_subtitle = switch(as.character(corr_values[[corr_index]]),
-                           "0" = "Uncorrelated error components",
-                           "0.5" = "Correlated error components"),
+    plot_title = paste0(num_signals, '-variable signal set'),
+    plot_subtitle = switch(
+      as.character(corr_value),
+      "0" = "Uncorrelated error components",
+      expression(paste(
+        'Correlated error components (', rho, ' = 0.5)'))),
     plot_caption = NULL,
     x_axis_title = "Sample Size",
-    y_axis_title = "Proportion of Variables Kept",
+    y_axis_title = "Share of Variables Kept",
     legend_title = NULL,
     line_size = line_size_phimr, point_size = point_size_phimr,
     theme_settings = theme_phimr(),
@@ -1040,27 +1053,16 @@ makePhimrDensityPlots <- function(data) {
   signal_values <- sort(unique(data$signals))
   corr_values <- sort(unique(data$rho))
   sample_sizes <- sort(unique(data$samplesize))
-  corr_labels <- rep('NA', length(corr_values))
-  for (i in seq_along(corr_values)) {
-    if (corr_values[[i]] == 0) {
-      corr_labels[[i]] <- 'errors with uncorrelated components'
-    } else {
-      corr_labels[[i]] <-
-        paste0('errors with correlated components (\u00B1', '0.5 pairwise)')
-    }
-  }
   plot_sparse_corr1 <- phimrDensityPlot(
-    data, corr_values, corr_labels, corr_index = 1, signal_values[[1]],
-    sample_sizes)
+    data, corr_values[[1]], signal_values[[1]], sample_sizes)
   plot_dense_corr1 <- phimrDensityPlot(
-    data, corr_values, corr_labels, corr_index = 1, signal_values[[2]],
-    sample_sizes)
+    data, corr_values[[1]], signal_values[[2]], sample_sizes)
   plot_sparse_corr2 <- phimrDensityPlot(
-    data, corr_values, corr_labels, corr_index = 2, signal_values[[1]],
-    sample_sizes) + labs(title = NULL) + ylab(NULL)
+    data, corr_values[[2]], signal_values[[1]], sample_sizes) +
+    labs(title = NULL) + ylab(NULL)
   plot_dense_corr2 <- phimrDensityPlot(
-    data, corr_values, corr_labels, corr_index = 2, signal_values[[2]],
-    sample_sizes) + labs(title = NULL) + ylab(NULL)
+    data, corr_values[[2]], signal_values[[2]], sample_sizes) +
+    labs(title = NULL) + ylab(NULL)
   joint_plot <- cowplot::plot_grid(
     plot_sparse_corr1 + theme(legend.position = "none"),
     plot_sparse_corr2 + theme(legend.position = "none"),
@@ -1076,22 +1078,22 @@ makePhimrDensityPlots <- function(data) {
     theme_settings = theme_phimr(), legend_from = plot_sparse_corr1))
 }
 
-phimrDensityPlot <- function(
-  data, corr_values, corr_labels, corr_index, num_signals, x_breaks) {
+phimrDensityPlot <- function(data, corr_value, num_signals, x_breaks) {
   makeLinePlot(
-    data[which(
-      (data$rho == corr_values[[corr_index]]) &
-        (data$signals == num_signals)), ],
+    data[which((data$rho == corr_value) & (data$signals == num_signals)), ],
     xvar = "samplesize", yvar = "value", groupvar = "featdim",
     color_scheme = colors_phimr(n_colors = length(unique(data$featdim))),
     shape_scheme = all_shapes,
-    plot_title = paste0(num_signals, '-variable signal'),
-    plot_subtitle = switch(as.character(corr_values[[corr_index]]),
-                           "0" = "Uncorrelated error components",
-                           "0.5" = "Correlated error components"),
+    plot_title = paste0(num_signals, '-variable signal set'),
+    plot_subtitle = switch(
+      as.character(corr_value),
+      "0" = "Uncorrelated error components",
+      "0.5" =
+        expression(paste(
+          'Correlated error components (', rho, ' = 0.5)'))),
     plot_caption = NULL,
     x_axis_title = "Sample Size",
-    y_axis_title = "Proportion of Variables Kept",
+    y_axis_title = "Signal Density, After / Before",
     legend_title = "feature dim.",
     line_size = line_size_phimr, point_size = point_size_phimr,
     theme_settings = theme_phimr()
@@ -1106,11 +1108,8 @@ phimrDensityPlot <- function(
 # Generate list of file paths for plot data and plots
 pvaluePlotFiles <- function() {
 
-  scenario_filename_stem <-
-    paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
-           '_m', num_replicates, '_', x_type, '_', error_distribution,
-           '_s', signal_strength * 100, '_', signal_density,
-           '_c', error_correlation_strength * 100, '_n', n, '_p', p)
+  source(file.path(dir_src, 'define_scenario_filename.R'))
+
   file_data_stats <-
     file.path(dir_data_adaptive_within,
               paste0(scenario_filename_stem, '_raw.Rdata'))
@@ -1135,6 +1134,7 @@ pvaluePlotFiles <- function() {
   file_plot_phimr <-
     file.path(dir_plots_adaptive_within,
               paste0(scenario_filename_stem, "_phimr.pdf"))
+
   return(list("stats" = file_data_stats,
               "pvalues" = file_data_pvalues,
               "plot_stats" = file_plot_statdistr,
@@ -1610,7 +1610,9 @@ makePhimrHistogram <- function(values, type, maxcount) {
           panel.grid.minor.x = element_blank(),
           plot.title = element_text(margin = margin(b = 15)),
           axis.text.x = element_text(margin = margin(t = -7, b = 5))) +
-    guides(x = guide_axis(angle = 90))
+    guides(x = guide_axis(angle = 90)) +
+    geom_vline(xintercept = mean(values), color = border_color,
+               linetype = "dashed", size = 1.2)
 }
 
 
@@ -1670,50 +1672,66 @@ getSignalIndices <- function(x_type, signal_density) {
   # Case 2: X is discrete SNP-set data
   if (x_type == 'snp') {
 
+    ### BASE ORIGINATING SET FOR SIGNAL VARIABLES ###
+
     # We begin by defining three regions of the reference SNP-set data that
     #  exhibit relatively low correlation among components
     region1 <- 132:(132 + 46)
     region2 <- 213:(213 + 30)
     region3 <- 505:(505 + 44)
-
-    # Subcase A: Sparse signal set (28 signals)
+    # Sparse signal set (28 signals)
     if (signal_density == 'sparse') {
-
-      # We select signal variables from among the regions previously defined
-      signal_set <- c(region1[c(39, 41:46)],
-                      region2[c(2:8)],
-                      region3[c(9, 10, 11, 13, 15, 16, 17, 36:40, 42, 43)])
-
+      if (signal_correlation == 'high') {
+        # Use the first 28 components of X as the base signal set
+        signal_set <- 1:28
+      } else {
+        # Select signal variables from among the low-correlation regions
+        signal_set <- c(region1[c(39, 41:46)],
+                        region2[c(2:8)],
+                        region3[c(9, 10, 11, 13, 15, 16, 17, 36:40, 42, 43)])
+      }
     }
-
-    # Subcase B: Dense signal set (123 signals)
+    # Dense signal set (122 signals)
+    # Note: originating set will have 123 elements; only 122 will be used
+    # for the actual signal set
     if (signal_density == 'dense') {
-
-      # Use the three previously defined regions as the set of signal variables
-      signal_set <- c(region1, region2, region3)
-
+      if (signal_correlation == 'high') {
+        # Use the first 123 components of X as the base signal set
+        signal_set <- 1:123
+      } else {
+        # Use the entirety of the three low-corr regions as the signal set
+        signal_set <- c(region1, region2, region3)
+      }
     }
+
+    ### Indices of Signal Set Used By Each Effect Function ###
+
+    # Descriptions of spatial patterns of indices pertain to their distribution
+    # within the signal set; note that the signal set may not correspond to a
+    # contiguous region of X
 
     # shared signals for all Y components
     #   clustered in groups of 2 with a 2-variable gap between each group
     signal_indices_shared <-
-      sort(union(seq(from = 1, to = length(signal_set), by = 4),
-                 seq(from = 2, to = length(signal_set), by = 4)))
+      signal_set[sort(union(seq(from = 1, to = length(signal_set), by = 4),
+                            seq(from = 2, to = length(signal_set), by = 4)))]
 
     # additional signals for Y_2
     #   clustered as with the shared components, but offset by 4 variables,
     #   so that the clusters for Y_2 occupy the gaps between the shared clusters
     signal_indices_y2_only <-
-      sort(union(seq(from = 3, to = length(signal_set), by = 4),
-                 seq(from = 4, to = length(signal_set), by = 4)))
+      signal_set[sort(union(seq(from = 3, to = length(signal_set), by = 4),
+                            seq(from = 4, to = length(signal_set), by = 4)))]
 
     # additional signals for Y_1
     #   subset of the additional signals for Y_2, located in left of each cluster
-    signal_indices_y1 <- seq(from = 3, to = length(signal_set), by = 4)
+    signal_indices_y1 <-
+      signal_set[seq(from = 3, to = length(signal_set), by = 4)]
 
     # additional signals for Y_3
     #   subset of the additional signals for Y_2, located in right of each cluster
-    signal_indices_y3 <- seq(from = 4, to = length(signal_set), by = 4)
+    signal_indices_y3 <-
+      signal_set[seq(from = 4, to = length(signal_set), by = 4)]
 
     # additional signals for Y_4
     #   same as the additional signals for Y_2
@@ -1743,7 +1761,7 @@ getSignalIndices <- function(x_type, signal_density) {
     unique(c(signal_indices_shared, signal_indices_y1,
              signal_indices_y2_only, signal_indices_y3,
              signal_indices_y4))
-  if (x_type == 'snp') signal_indices <- signal_set[signal_indices]
+
   return(signal_indices)
 }
 
@@ -1863,6 +1881,34 @@ makeKernelBenchPlots <- function(data = data_kermat,
 }
 
 # Data is a matrix; rows index n, cols index p
+makeGenericBenchPlot <- function(data, num_executions,
+                                 timefactor,
+                                 y_axis_title,
+                                 title,
+                                 subtitle,
+                                 line_size = line_size_bench_phimr,
+                                 point_size = point_size_bench_phimr,
+                                 theme_settings = theme_bench_phimr(),
+                                 color_scheme =
+                                   colors_bench(n_colors = nrow(data)),
+                                 shape_scheme = all_shapes) {
+
+  global_min <- 2^floor(log2(min(data) / timefactor))
+  global_max <- 2^ceiling(log2(max(data) / timefactor))
+  y_ticks <- 2^(0:log2(global_max))
+  ylims <- c(global_min, global_max)
+
+  out <- makeBenchPlot(
+    data, title = title,
+    y_limits = ylims, y_breaks = y_ticks, timefactor = timefactor,
+    subtitle = subtitle,
+    line_size = line_size, point_size = point_size,
+    y_axis_title = y_axis_title, theme_settings = theme_settings,
+    color_scheme = color_scheme, shape_scheme = shape_scheme)
+  return(out)
+}
+
+# Data is a matrix; rows index n, cols index p
 makePhimrBenchPlot <- function(data = data_phimr, num_executions = reps_phimr,
                                timefactor = timefactor_phimr,
                                y_axis_title = timelabel_phimr,
@@ -1889,6 +1935,7 @@ makePhimrBenchPlot <- function(data = data_phimr, num_executions = reps_phimr,
     color_scheme = color_scheme, shape_scheme = shape_scheme)
   return(out)
 }
+
 
 # Data is an array; 3rd dim indexes the plots; rows index n, cols index p
 makeAmkatBenchPlots <- function(data = data_amkat,

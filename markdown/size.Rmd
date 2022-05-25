@@ -1,0 +1,111 @@
+---
+title: 'Simulation Results: Size'
+output:
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
+    number_sections: yes
+    df_print: kable
+  github_document:
+    math_method:
+      engine: webtex
+      url: http://chart.apis.google.com/chart?cht=tx&chl=
+    toc: yes
+  html_document: 
+    toc: yes
+    toc_float: yes
+    toc_depth: 4
+    df_print: kable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, 
+                      out.width = "100%")
+```
+
+
+We review results from our simulations for size.
+
+
+## Prepare Working Environment
+
+We begin by loading the relevant R packages:
+```{r, results='hide', warning=FALSE, message=FALSE}
+library(kableExtra)
+options(knitr.table.format = 'html')
+```
+
+We then define directories for relevant scripts and data:
+```{r}
+dir_main <- dirname(dirname(rstudioapi::getActiveDocumentContext()$path))
+dir_src <- file.path(dir_main, 'source_scripts')
+source(file.path(dir_src, 'define_directories.R'))
+```
+
+All scenarios in this simulation setting share the following parameter values:
+```{r}
+size_or_power <- "size"
+alpha <- 0.05
+num_permutations <- 1000
+num_replicates <- 5000
+values_for_error_distribution <- c('normal', 'cauchy')
+values_for_error_corr_strength <- c(0, 0.5)
+```
+
+
+
+## Continuous Features
+
+We generate a table of empirical size results for each test method from the simulated data for size scenarios where $\boldsymbol{X}$ was modeled as a continuous random vector:
+```{r}
+x_type <- 'cts'
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, caption = caption) %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  add_header_above(outer_header_row) %>%
+  pack_rows(index = row_group_index)
+```
+
+The sample sizes considered in these scenarios are small ($n=50$ and $n=100$) in order to investigate whether AMKAT can reasonably control the type I error rate under small sample sizes when using the PhiMr filter (especially when using multiple test statistics to estimate a $P$-value).
+
+**Multivariate normal errors**
+
+When the random error vector $\boldsymbol{\epsilon}$ was simulated as multivariate normal, we see that AMKAT with the PhiMr filter had a well-controlled type I error rate when using a single test statistic ($Q=1$) for $P$-value estimation.  By contrast, OMGA, whose $P$-value is based on asymptotic results, was highly conservative under the samples sizes considered. DKAT, which approximates the permutation null distribution of its test statistic by a Pearson type III distribution whose parameters are estimated via moment matching, had well-controlled type I error rate. 
+
+When using the average of multiple test statistics ($Q \geq 2$) under the PhiMr filter to estimate a $P$-value, AMKAT's type I error rate gradually became (slightly) more conservative as $Q$ increased; this trend stabilized at or before $Q = 64$, beyond which the type I error rate held constant at a value typically of around 3.5%. 
+
+Interestingly, when using multiple test statistics $(Q \geq 2)$, AMKAT's type I error rate was typically closer to nominal when error components were correlated rather than uncorrelated. For $n=100$ and $p=2000$, all AMKAT variations maintained type I error rates above 4.4% when the error components were correlated; a similar situation was also observed for $n=50$ and $p=500$, where no rates were below 3.98% when error components were correlated. Consistent with this pattern, the one setting in which AMKAT had type I error rates below its typical levels was $n=50$ and $p=2000$ with uncorrelated error components, where the type I error rate stabilized at around 2.8% for $Q \geq 32$. 
+
+
+**Multivariate Cauchy errors**
+
+When the random error vector $\boldsymbol{\epsilon}$ was simulated as multivariate Cauchy, AMKAT had type I error control similar to the case when $\boldsymbol{\epsilon}$ was simulated as multivariate normal. The multivariate Cauchy distribution (i.e., multivariate Student's $t$ with 1 degree of freedom) is a pathological distribution whose mean vector and covariance matrix are undefined, and was used to assess the robustness of AMKAT's type I error control against deviations from our model's assumption of the random error vector having a mean vector and covariance matrix with finite entries; this assumption guarantees certain asymptotic properties of some estimators used in our test, such as the ratio consistency of the estimator $\hat{\sigma}^2_{\tau_j}$ for the asymptotic variance of the statistic $\tau_j$, corresponding to the $j$th response component, that appears in the test statistic used by AMKAT.
+
+We observe from our results that a multivariate Cauchy error distribution had little to no impact on AMKAT's type I error control. While DKAT's type I error control was also robust under multivariate Cauchy errors, OMGA's type I error rate was highly conservative relative to scenarios with multivariate normal errors.
+
+## Discrete Features
+
+We generate a table of empirical size results for each test method from the simulated data for size scenarios where $\boldsymbol{X}$ was modeled as a discrete random vector representing additive-encoded SNP-set data:
+```{r}
+x_type <- 'snp'
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, caption = caption) %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+```
+
+**Multivariate normal errors**
+
+From the above table, we observe that AMKAT maintained reasonably well-controlled type I error rate in all settings and across all values for the number $Q$ of test statistics used under PhiMr for $P$-value estimation. DKAT had well-controlled type I error rate, while OMGA was conservative at the sample sizes considered, though not as much so as was observed for the case with a set of continuous features.
+
+**Multivariate Cauchy errors**
+
+AMKAT and DKAT had robust type I error control under a multivariate Cauchy error distribution, while OMGA was extremely conservative.  

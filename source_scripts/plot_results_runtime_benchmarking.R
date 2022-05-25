@@ -28,6 +28,37 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
       base_height = height_bench_phimr, base_asp = asp_bench_phimr)
   }
 
+  # single-trait standardized statistic
+  if (!file.exists(bench_file_stat) | overwrite_existing_plots) {
+    plot_stat <-
+      makeGenericBenchPlot(
+        data_stat, reps_stat, 1e+6, "Median Time (ms)",
+        "Time to Compute\nStandardized Single-Trait Statistic",
+        paste0(
+          "4 response variables; continuous features\nMedian time over ",
+          reps_stat, " executions of the .estimateSignalToNoise()\nfunction from the AMKAT R package",
+          "\nComputation does not include kernel matrix"),
+        theme_settings = theme_bench_phimr(aspect = 0.5))
+    cowplot::save_plot(
+      filename = bench_file_stat, plot = plot_stat,
+      base_height = 7, base_asp = 0.8)
+  }
+
+  # covariate adjustment
+  if (!file.exists(bench_file_cov) | overwrite_existing_plots) {
+    plot_cov <-
+      makeGenericBenchPlot(
+        data_cov, reps_cov, 1e+3, "Median Time (\U00B5s)",
+        "Time to Perform Covariate Adjustment",
+        paste0(
+          "4 response variables; 2 covariates; continuous features\nMedian time over ",
+          reps_cov, " executions of the .fitAmkatNullModel()\nfunction from the AMKAT R package"),
+        theme_settings = theme_bench_phimr(aspect = 0.5))
+    cowplot::save_plot(
+      filename = bench_file_cov, plot = plot_cov,
+      base_height = 7, base_asp = 0.8)
+  }
+
   # AMKAT full test
   if (!file.exists(bench_file_amkat) | overwrite_existing_plots) {
     plot_amkat <- makeAmkatBenchPlots(
