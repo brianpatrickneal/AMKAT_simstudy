@@ -23,14 +23,12 @@ This is the R project used to house the source code, simulated data and full ana
 Brian Neal and Tao He. "An Adaptive Multivariate Kernel-Based Test for Association with Multiple Quantitative Traits in High-Dimensional Data." In progress.
 
 
-
 ## Simulation Design
 
 A complete description of the simulation study design can be found in our manuscript. Below are documents related to the implementation of our study design in R.
 
 * [Simulation Scenario Design](https://github.com/brianpatrickneal/AMKAT_simstudy/blob/main/markdown/setup.html)
 * [Simulated SNP Set](https://github.com/brianpatrickneal/AMKAT_simstudy/blob/main/markdown/SNPset_corr_heatmaps.html)
-
 
 
 ## Analysis of Results
