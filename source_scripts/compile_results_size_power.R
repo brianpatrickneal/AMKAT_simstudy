@@ -28,14 +28,14 @@ method_labels <- character()
 if (size_or_power == 'power') method_labels <-
   c(method_labels, 'AMKAT (no filter)')
 method_labels <- c(method_labels,
-                   'AMKAT-PhiMr-Q1',
-                   'AMKAT-PhiMr-Q2',
-                   'AMKAT-PhiMr-Q4',
-                   'AMKAT-PhiMr-Q8',
-                   'AMKAT-PhiMr-Q16',
-                   'AMKAT-PhiMr-Q32',
-                   'AMKAT-PhiMr-Q64',
-                   'AMKAT-PhiMr-Q128',
+                   'AMKAT-PF1',
+                   'AMKAT-PF2',
+                   'AMKAT-PF4',
+                   'AMKAT-PF8',
+                   'AMKAT-PF16',
+                   'AMKAT-PF32',
+                   'AMKAT-PF64',
+                   'AMKAT-PF128',
                    'OMGA', 'DKAT', 'DKAT-LPK')
 
 makeCaption <- function(size_or_power, x_type, num_replicates, num_permutations,
@@ -62,7 +62,7 @@ makeCaption <- function(size_or_power, x_type, num_replicates, num_permutations,
     " simulated data replicates ", feature_label,
     ". All tests performed at significance level $\\alpha = ", alpha, "$. ",
     "AMKAT P-values estimated using ", num_permutations, " permutations. ",
-    "AMKAT-Phimr-Q$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.")
+    "AMKAT-PF$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.")
   return(caption)
 }
 
