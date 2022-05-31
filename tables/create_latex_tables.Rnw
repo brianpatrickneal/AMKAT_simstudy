@@ -1,0 +1,58 @@
+\documentclass[a4paper,oneside,10pt]{article}
+\usepackage{a4wide} %%Smaller margins = more text per page.
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\begin{document}
+<<setup, include=F>>=
+options(knitr.table.format = 'latex')
+library(kableExtra)
+@
+
+<<size_cts, echo=F>>=
+size_or_power <- "size"
+alpha <- 0.05
+num_permutations <- 1000
+num_replicates <- 5000
+x_type <- 'cts'
+load(paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+            '_m', num_replicates, '_', x_type, '.Rdata'))
+kbl(compiled_results, escape = F, booktabs = T, caption = caption) %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  add_header_above(outer_header_row) %>%
+  pack_rows(index = row_group_index)
+@
+
+<<size_snp, echo=F>>=
+size_or_power <- "size"
+alpha <- 0.05
+num_permutations <- 1000
+num_replicates <- 5000
+x_type <- 'snp'
+load(file.path(
+  dir_tables,
+  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '.Rdata')))
+kbl(compiled_results, escape = F, booktabs = T, caption = caption) %>%
+  kable_styling() %>%
+  add_header_above(header_row) %>%
+  pack_rows(index = row_group_index)
+@
+
+
+
+
+\end{document}

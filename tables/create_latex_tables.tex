@@ -1,0 +1,165 @@
+\documentclass[a4paper,oneside,10pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{a4wide} %%Smaller margins = more text per page.
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}
+
+\caption{\label{tab:size_cts}Empirical size (percentage) across 5000 simulated data replicates  using continuous features. All tests performed at significance level $\alpha = 0.05$. AMKAT P-values estimated using 1000 permutations. AMKAT-Phimr-Q$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{4}{c}{Uncorrelated error components} & \multicolumn{4}{c}{Correlated error components} \\
+\cmidrule(l{3pt}r{3pt}){2-5} \cmidrule(l{3pt}r{3pt}){6-9}
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{\$p = 500\$} & \multicolumn{2}{c}{\$p = 2000\$} & \multicolumn{2}{c}{\$p = 500\$} & \multicolumn{2}{c}{\$p = 2000\$} \\
+\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5} \cmidrule(l{3pt}r{3pt}){6-7} \cmidrule(l{3pt}r{3pt}){8-9}
+  & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{9}{l}{\textbf{Multivariate normal errors}}\\
+\hspace{1em}AMKAT-PhiMr-Q1 & 5.06 & 5.04 & 4.86 & 4.88 & 4.94 & 4.24 & 5.34 & 5.06\\
+\hspace{1em}AMKAT-PhiMr-Q2 & 4.08 & 4.20 & 3.82 & 4.48 & 4.62 & 3.84 & 4.60 & 4.78\\
+\hspace{1em}AMKAT-PhiMr-Q4 & 3.70 & 3.96 & 3.28 & 4.20 & 4.42 & 3.58 & 4.22 & 4.82\\
+\hspace{1em}AMKAT-PhiMr-Q8 & 3.52 & 3.62 & 3.02 & 3.92 & 4.00 & 3.56 & 3.82 & 4.70\\
+\hspace{1em}AMKAT-PhiMr-Q16 & 3.44 & 3.44 & 2.88 & 3.80 & 4.18 & 3.62 & 3.68 & 4.52\\
+\hspace{1em}AMKAT-PhiMr-Q32 & 3.38 & 3.34 & 2.82 & 3.52 & 4.20 & 3.52 & 3.54 & 4.40\\
+\hspace{1em}AMKAT-PhiMr-Q64 & 3.40 & 3.34 & 2.84 & 3.56 & 4.14 & 3.48 & 3.48 & 4.42\\
+\hspace{1em}AMKAT-PhiMr-Q128 & 3.48 & 3.44 & 2.82 & 3.68 & 3.98 & 3.38 & 3.44 & 4.48\\
+\hspace{1em}OMGA & 0.50 & 0.28 & 0.24 & 0.04 & 0.40 & 0.14 & 0.24 & 0.12\\
+\hspace{1em}DKAT & 5.00 & 5.46 & 4.60 & 5.22 & 4.66 & 4.68 & 4.92 & 5.36\\
+\hspace{1em}DKAT-LPK & 4.70 & 5.26 & 4.56 & 5.20 & 5.02 & 4.32 & 5.18 & 5.44\\
+\addlinespace[0.3em]
+\multicolumn{9}{l}{\textbf{Multivariate Cauchy errors}}\\
+\hspace{1em}AMKAT-PhiMr-Q1 & 4.96 & 4.96 & 4.70 & 5.30 & 4.50 & 5.02 & 5.24 & 5.18\\
+\hspace{1em}AMKAT-PhiMr-Q2 & 4.12 & 4.32 & 4.12 & 4.00 & 4.08 & 4.20 & 4.36 & 4.62\\
+\hspace{1em}AMKAT-PhiMr-Q4 & 3.46 & 3.94 & 3.24 & 3.50 & 3.70 & 3.78 & 4.12 & 4.18\\
+\hspace{1em}AMKAT-PhiMr-Q8 & 3.32 & 3.64 & 3.18 & 3.22 & 3.52 & 3.84 & 4.04 & 4.16\\
+\hspace{1em}AMKAT-PhiMr-Q16 & 3.32 & 3.50 & 3.24 & 3.20 & 3.34 & 3.76 & 3.88 & 4.00\\
+\hspace{1em}AMKAT-PhiMr-Q32 & 3.20 & 3.24 & 3.14 & 3.14 & 3.30 & 3.66 & 3.58 & 4.00\\
+\hspace{1em}AMKAT-PhiMr-Q64 & 3.14 & 3.28 & 3.06 & 3.10 & 3.36 & 3.58 & 3.70 & 3.96\\
+\hspace{1em}AMKAT-PhiMr-Q128 & 3.20 & 3.34 & 2.92 & 3.14 & 3.28 & 3.54 & 3.68 & 3.92\\
+\hspace{1em}OMGA & 0.10 & 0.02 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\
+\hspace{1em}DKAT & 5.38 & 4.86 & 5.24 & 4.68 & 4.88 & 5.26 & 4.60 & 5.56\\
+\hspace{1em}DKAT-LPK & 5.28 & 4.82 & 5.00 & 5.10 & 4.50 & 5.42 & 5.26 & 5.36\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file.path(dir\_tables, paste0(size\_or\_power, "{}\_a"{}, alpha * 1000, : object 'dir\_tables' not found}}\end{kframe}\begin{table}
+
+\caption{\label{tab:size_snp}Empirical size (percentage) across 5000 simulated data replicates  using continuous features. All tests performed at significance level $\alpha = 0.05$. AMKAT P-values estimated using 1000 permutations. AMKAT-Phimr-Q$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.}
+\centering
+\begin{tabular}[t]{lrrrrrrrr}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{\$p = 500\$} & \multicolumn{2}{c}{\$p = 2000\$} & \multicolumn{2}{c}{\$p = 500\$} & \multicolumn{2}{c}{\$p = 2000\$} \\
+\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5} \cmidrule(l{3pt}r{3pt}){6-7} \cmidrule(l{3pt}r{3pt}){8-9}
+  & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{9}{l}{\textbf{Multivariate normal errors}}\\
+\hspace{1em}AMKAT-PhiMr-Q1 & 5.06 & 5.04 & 4.86 & 4.88 & 4.94 & 4.24 & 5.34 & 5.06\\
+\hspace{1em}AMKAT-PhiMr-Q2 & 4.08 & 4.20 & 3.82 & 4.48 & 4.62 & 3.84 & 4.60 & 4.78\\
+\hspace{1em}AMKAT-PhiMr-Q4 & 3.70 & 3.96 & 3.28 & 4.20 & 4.42 & 3.58 & 4.22 & 4.82\\
+\hspace{1em}AMKAT-PhiMr-Q8 & 3.52 & 3.62 & 3.02 & 3.92 & 4.00 & 3.56 & 3.82 & 4.70\\
+\hspace{1em}AMKAT-PhiMr-Q16 & 3.44 & 3.44 & 2.88 & 3.80 & 4.18 & 3.62 & 3.68 & 4.52\\
+\hspace{1em}AMKAT-PhiMr-Q32 & 3.38 & 3.34 & 2.82 & 3.52 & 4.20 & 3.52 & 3.54 & 4.40\\
+\hspace{1em}AMKAT-PhiMr-Q64 & 3.40 & 3.34 & 2.84 & 3.56 & 4.14 & 3.48 & 3.48 & 4.42\\
+\hspace{1em}AMKAT-PhiMr-Q128 & 3.48 & 3.44 & 2.82 & 3.68 & 3.98 & 3.38 & 3.44 & 4.48\\
+\hspace{1em}OMGA & 0.50 & 0.28 & 0.24 & 0.04 & 0.40 & 0.14 & 0.24 & 0.12\\
+\hspace{1em}DKAT & 5.00 & 5.46 & 4.60 & 5.22 & 4.66 & 4.68 & 4.92 & 5.36\\
+\hspace{1em}DKAT-LPK & 4.70 & 5.26 & 4.56 & 5.20 & 5.02 & 4.32 & 5.18 & 5.44\\
+\addlinespace[0.3em]
+\multicolumn{9}{l}{\textbf{Multivariate Cauchy errors}}\\
+\hspace{1em}AMKAT-PhiMr-Q1 & 4.96 & 4.96 & 4.70 & 5.30 & 4.50 & 5.02 & 5.24 & 5.18\\
+\hspace{1em}AMKAT-PhiMr-Q2 & 4.12 & 4.32 & 4.12 & 4.00 & 4.08 & 4.20 & 4.36 & 4.62\\
+\hspace{1em}AMKAT-PhiMr-Q4 & 3.46 & 3.94 & 3.24 & 3.50 & 3.70 & 3.78 & 4.12 & 4.18\\
+\hspace{1em}AMKAT-PhiMr-Q8 & 3.32 & 3.64 & 3.18 & 3.22 & 3.52 & 3.84 & 4.04 & 4.16\\
+\hspace{1em}AMKAT-PhiMr-Q16 & 3.32 & 3.50 & 3.24 & 3.20 & 3.34 & 3.76 & 3.88 & 4.00\\
+\hspace{1em}AMKAT-PhiMr-Q32 & 3.20 & 3.24 & 3.14 & 3.14 & 3.30 & 3.66 & 3.58 & 4.00\\
+\hspace{1em}AMKAT-PhiMr-Q64 & 3.14 & 3.28 & 3.06 & 3.10 & 3.36 & 3.58 & 3.70 & 3.96\\
+\hspace{1em}AMKAT-PhiMr-Q128 & 3.20 & 3.34 & 2.92 & 3.14 & 3.28 & 3.54 & 3.68 & 3.92\\
+\hspace{1em}OMGA & 0.10 & 0.02 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\
+\hspace{1em}DKAT & 5.38 & 4.86 & 5.24 & 4.68 & 4.88 & 5.26 & 4.60 & 5.56\\
+\hspace{1em}DKAT-LPK & 5.28 & 4.82 & 5.00 & 5.10 & 4.50 & 5.42 & 5.26 & 5.36\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{knitrout}
+
+
+
+
+\end{document}
