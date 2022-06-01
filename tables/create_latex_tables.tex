@@ -71,7 +71,7 @@
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}
 
-\caption{\label{tab:size_cts}Empirical size (percentage) across 5000 simulated data replicates  using continuous features. All tests performed at significance level $\alpha = 0.05$. AMKAT P-values estimated using 1000 permutations. AMKAT-Phimr-Q$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.}
+\caption{\label{tab:size_cts}Empirical size (percentage) across 5000 simulated data replicates  using continuous features. All tests performed at significance level $\alpha = 0.05$. AMKAT P-values estimated using 1000 permutations. AMKAT-PF$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.}
 \centering
 \begin{tabular}[t]{lrrrrrrrr}
 \toprule
@@ -83,27 +83,27 @@
 \midrule
 \addlinespace[0.3em]
 \multicolumn{9}{l}{\textbf{Multivariate normal errors}}\\
-\hspace{1em}AMKAT-PhiMr-Q1 & 5.06 & 5.04 & 4.86 & 4.88 & 4.94 & 4.24 & 5.34 & 5.06\\
-\hspace{1em}AMKAT-PhiMr-Q2 & 4.08 & 4.20 & 3.82 & 4.48 & 4.62 & 3.84 & 4.60 & 4.78\\
-\hspace{1em}AMKAT-PhiMr-Q4 & 3.70 & 3.96 & 3.28 & 4.20 & 4.42 & 3.58 & 4.22 & 4.82\\
-\hspace{1em}AMKAT-PhiMr-Q8 & 3.52 & 3.62 & 3.02 & 3.92 & 4.00 & 3.56 & 3.82 & 4.70\\
-\hspace{1em}AMKAT-PhiMr-Q16 & 3.44 & 3.44 & 2.88 & 3.80 & 4.18 & 3.62 & 3.68 & 4.52\\
-\hspace{1em}AMKAT-PhiMr-Q32 & 3.38 & 3.34 & 2.82 & 3.52 & 4.20 & 3.52 & 3.54 & 4.40\\
-\hspace{1em}AMKAT-PhiMr-Q64 & 3.40 & 3.34 & 2.84 & 3.56 & 4.14 & 3.48 & 3.48 & 4.42\\
-\hspace{1em}AMKAT-PhiMr-Q128 & 3.48 & 3.44 & 2.82 & 3.68 & 3.98 & 3.38 & 3.44 & 4.48\\
+\hspace{1em}AMKAT-PF1 & 5.06 & 5.04 & 4.86 & 4.88 & 4.94 & 4.24 & 5.34 & 5.06\\
+\hspace{1em}AMKAT-PF2 & 4.08 & 4.20 & 3.82 & 4.48 & 4.62 & 3.84 & 4.60 & 4.78\\
+\hspace{1em}AMKAT-PF4 & 3.70 & 3.96 & 3.28 & 4.20 & 4.42 & 3.58 & 4.22 & 4.82\\
+\hspace{1em}AMKAT-PF8 & 3.52 & 3.62 & 3.02 & 3.92 & 4.00 & 3.56 & 3.82 & 4.70\\
+\hspace{1em}AMKAT-PF16 & 3.44 & 3.44 & 2.88 & 3.80 & 4.18 & 3.62 & 3.68 & 4.52\\
+\hspace{1em}AMKAT-PF32 & 3.38 & 3.34 & 2.82 & 3.52 & 4.20 & 3.52 & 3.54 & 4.40\\
+\hspace{1em}AMKAT-PF64 & 3.40 & 3.34 & 2.84 & 3.56 & 4.14 & 3.48 & 3.48 & 4.42\\
+\hspace{1em}AMKAT-PF128 & 3.48 & 3.44 & 2.82 & 3.68 & 3.98 & 3.38 & 3.44 & 4.48\\
 \hspace{1em}OMGA & 0.50 & 0.28 & 0.24 & 0.04 & 0.40 & 0.14 & 0.24 & 0.12\\
 \hspace{1em}DKAT & 5.00 & 5.46 & 4.60 & 5.22 & 4.66 & 4.68 & 4.92 & 5.36\\
 \hspace{1em}DKAT-LPK & 4.70 & 5.26 & 4.56 & 5.20 & 5.02 & 4.32 & 5.18 & 5.44\\
 \addlinespace[0.3em]
 \multicolumn{9}{l}{\textbf{Multivariate Cauchy errors}}\\
-\hspace{1em}AMKAT-PhiMr-Q1 & 4.96 & 4.96 & 4.70 & 5.30 & 4.50 & 5.02 & 5.24 & 5.18\\
-\hspace{1em}AMKAT-PhiMr-Q2 & 4.12 & 4.32 & 4.12 & 4.00 & 4.08 & 4.20 & 4.36 & 4.62\\
-\hspace{1em}AMKAT-PhiMr-Q4 & 3.46 & 3.94 & 3.24 & 3.50 & 3.70 & 3.78 & 4.12 & 4.18\\
-\hspace{1em}AMKAT-PhiMr-Q8 & 3.32 & 3.64 & 3.18 & 3.22 & 3.52 & 3.84 & 4.04 & 4.16\\
-\hspace{1em}AMKAT-PhiMr-Q16 & 3.32 & 3.50 & 3.24 & 3.20 & 3.34 & 3.76 & 3.88 & 4.00\\
-\hspace{1em}AMKAT-PhiMr-Q32 & 3.20 & 3.24 & 3.14 & 3.14 & 3.30 & 3.66 & 3.58 & 4.00\\
-\hspace{1em}AMKAT-PhiMr-Q64 & 3.14 & 3.28 & 3.06 & 3.10 & 3.36 & 3.58 & 3.70 & 3.96\\
-\hspace{1em}AMKAT-PhiMr-Q128 & 3.20 & 3.34 & 2.92 & 3.14 & 3.28 & 3.54 & 3.68 & 3.92\\
+\hspace{1em}AMKAT-PF1 & 4.96 & 4.96 & 4.70 & 5.30 & 4.50 & 5.02 & 5.24 & 5.18\\
+\hspace{1em}AMKAT-PF2 & 4.12 & 4.32 & 4.12 & 4.00 & 4.08 & 4.20 & 4.36 & 4.62\\
+\hspace{1em}AMKAT-PF4 & 3.46 & 3.94 & 3.24 & 3.50 & 3.70 & 3.78 & 4.12 & 4.18\\
+\hspace{1em}AMKAT-PF8 & 3.32 & 3.64 & 3.18 & 3.22 & 3.52 & 3.84 & 4.04 & 4.16\\
+\hspace{1em}AMKAT-PF16 & 3.32 & 3.50 & 3.24 & 3.20 & 3.34 & 3.76 & 3.88 & 4.00\\
+\hspace{1em}AMKAT-PF32 & 3.20 & 3.24 & 3.14 & 3.14 & 3.30 & 3.66 & 3.58 & 4.00\\
+\hspace{1em}AMKAT-PF64 & 3.14 & 3.28 & 3.06 & 3.10 & 3.36 & 3.58 & 3.70 & 3.96\\
+\hspace{1em}AMKAT-PF128 & 3.20 & 3.34 & 2.92 & 3.14 & 3.28 & 3.54 & 3.68 & 3.92\\
 \hspace{1em}OMGA & 0.10 & 0.02 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\
 \hspace{1em}DKAT & 5.38 & 4.86 & 5.24 & 4.68 & 4.88 & 5.26 & 4.60 & 5.56\\
 \hspace{1em}DKAT-LPK & 5.28 & 4.82 & 5.00 & 5.10 & 4.50 & 5.42 & 5.26 & 5.36\\
@@ -114,45 +114,42 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{table}
 
-
-{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error in file.path(dir\_tables, paste0(size\_or\_power, "{}\_a"{}, alpha * 1000, : object 'dir\_tables' not found}}\end{kframe}\begin{table}
-
-\caption{\label{tab:size_snp}Empirical size (percentage) across 5000 simulated data replicates  using continuous features. All tests performed at significance level $\alpha = 0.05$. AMKAT P-values estimated using 1000 permutations. AMKAT-Phimr-Q$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.}
+\caption{\label{tab:size_snp}Empirical size (percentage) across 5000 simulated data replicates  using a simulated SNP-set ($p = 567$). All tests performed at significance level $\alpha = 0.05$. AMKAT P-values estimated using 1000 permutations. AMKAT-PF$m$ denotes AMKAT with PhiMr filter using $Q=m$ test statistics for $P$-value estimation; DKAT-LPK denotes DKAT with linear phenotype kernel.}
 \centering
-\begin{tabular}[t]{lrrrrrrrr}
+\begin{tabular}[t]{lrrrrrr}
 \toprule
-\multicolumn{1}{c}{ } & \multicolumn{2}{c}{\$p = 500\$} & \multicolumn{2}{c}{\$p = 2000\$} & \multicolumn{2}{c}{\$p = 500\$} & \multicolumn{2}{c}{\$p = 2000\$} \\
-\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5} \cmidrule(l{3pt}r{3pt}){6-7} \cmidrule(l{3pt}r{3pt}){8-9}
-  & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$ & $n = 50$ & $n = 100$\\
+\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Uncorrelated error components} & \multicolumn{3}{c}{Correlated error components} \\
+\cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7}
+  & $n = 30$ & $n = 50$ & $n = 70$ & $n = 30$ & $n = 50$ & $n = 70$\\
 \midrule
 \addlinespace[0.3em]
-\multicolumn{9}{l}{\textbf{Multivariate normal errors}}\\
-\hspace{1em}AMKAT-PhiMr-Q1 & 5.06 & 5.04 & 4.86 & 4.88 & 4.94 & 4.24 & 5.34 & 5.06\\
-\hspace{1em}AMKAT-PhiMr-Q2 & 4.08 & 4.20 & 3.82 & 4.48 & 4.62 & 3.84 & 4.60 & 4.78\\
-\hspace{1em}AMKAT-PhiMr-Q4 & 3.70 & 3.96 & 3.28 & 4.20 & 4.42 & 3.58 & 4.22 & 4.82\\
-\hspace{1em}AMKAT-PhiMr-Q8 & 3.52 & 3.62 & 3.02 & 3.92 & 4.00 & 3.56 & 3.82 & 4.70\\
-\hspace{1em}AMKAT-PhiMr-Q16 & 3.44 & 3.44 & 2.88 & 3.80 & 4.18 & 3.62 & 3.68 & 4.52\\
-\hspace{1em}AMKAT-PhiMr-Q32 & 3.38 & 3.34 & 2.82 & 3.52 & 4.20 & 3.52 & 3.54 & 4.40\\
-\hspace{1em}AMKAT-PhiMr-Q64 & 3.40 & 3.34 & 2.84 & 3.56 & 4.14 & 3.48 & 3.48 & 4.42\\
-\hspace{1em}AMKAT-PhiMr-Q128 & 3.48 & 3.44 & 2.82 & 3.68 & 3.98 & 3.38 & 3.44 & 4.48\\
-\hspace{1em}OMGA & 0.50 & 0.28 & 0.24 & 0.04 & 0.40 & 0.14 & 0.24 & 0.12\\
-\hspace{1em}DKAT & 5.00 & 5.46 & 4.60 & 5.22 & 4.66 & 4.68 & 4.92 & 5.36\\
-\hspace{1em}DKAT-LPK & 4.70 & 5.26 & 4.56 & 5.20 & 5.02 & 4.32 & 5.18 & 5.44\\
+\multicolumn{7}{l}{\textbf{Multivariate normal errors}}\\
+\hspace{1em}AMKAT-PF1 & 5.12 & 5.20 & 5.28 & 4.90 & 4.88 & 4.88\\
+\hspace{1em}AMKAT-PF2 & 4.58 & 4.70 & 4.74 & 4.66 & 4.76 & 4.74\\
+\hspace{1em}AMKAT-PF4 & 4.16 & 4.20 & 4.48 & 4.44 & 4.64 & 4.46\\
+\hspace{1em}AMKAT-PF8 & 4.20 & 4.02 & 4.36 & 4.52 & 4.56 & 4.42\\
+\hspace{1em}AMKAT-PF16 & 4.00 & 3.94 & 4.20 & 4.44 & 4.42 & 4.34\\
+\hspace{1em}AMKAT-PF32 & 3.96 & 3.88 & 4.28 & 4.34 & 4.42 & 4.36\\
+\hspace{1em}AMKAT-PF64 & 4.00 & 3.98 & 4.24 & 4.38 & 4.42 & 4.40\\
+\hspace{1em}AMKAT-PF128 & 3.92 & 4.00 & 4.14 & 4.32 & 4.46 & 4.34\\
+\hspace{1em}OMGA & 2.66 & 1.70 & 1.24 & 2.26 & 1.74 & 1.66\\
+\hspace{1em}DKAT & 4.82 & 4.96 & 4.82 & 4.62 & 4.86 & 5.74\\
+\hspace{1em}DKAT-LPK & 4.90 & 4.68 & 4.92 & 4.88 & 5.04 & 5.18\\
 \addlinespace[0.3em]
-\multicolumn{9}{l}{\textbf{Multivariate Cauchy errors}}\\
-\hspace{1em}AMKAT-PhiMr-Q1 & 4.96 & 4.96 & 4.70 & 5.30 & 4.50 & 5.02 & 5.24 & 5.18\\
-\hspace{1em}AMKAT-PhiMr-Q2 & 4.12 & 4.32 & 4.12 & 4.00 & 4.08 & 4.20 & 4.36 & 4.62\\
-\hspace{1em}AMKAT-PhiMr-Q4 & 3.46 & 3.94 & 3.24 & 3.50 & 3.70 & 3.78 & 4.12 & 4.18\\
-\hspace{1em}AMKAT-PhiMr-Q8 & 3.32 & 3.64 & 3.18 & 3.22 & 3.52 & 3.84 & 4.04 & 4.16\\
-\hspace{1em}AMKAT-PhiMr-Q16 & 3.32 & 3.50 & 3.24 & 3.20 & 3.34 & 3.76 & 3.88 & 4.00\\
-\hspace{1em}AMKAT-PhiMr-Q32 & 3.20 & 3.24 & 3.14 & 3.14 & 3.30 & 3.66 & 3.58 & 4.00\\
-\hspace{1em}AMKAT-PhiMr-Q64 & 3.14 & 3.28 & 3.06 & 3.10 & 3.36 & 3.58 & 3.70 & 3.96\\
-\hspace{1em}AMKAT-PhiMr-Q128 & 3.20 & 3.34 & 2.92 & 3.14 & 3.28 & 3.54 & 3.68 & 3.92\\
-\hspace{1em}OMGA & 0.10 & 0.02 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00\\
-\hspace{1em}DKAT & 5.38 & 4.86 & 5.24 & 4.68 & 4.88 & 5.26 & 4.60 & 5.56\\
-\hspace{1em}DKAT-LPK & 5.28 & 4.82 & 5.00 & 5.10 & 4.50 & 5.42 & 5.26 & 5.36\\
+\multicolumn{7}{l}{\textbf{Multivariate Cauchy errors}}\\
+\hspace{1em}AMKAT-PF1 & 5.12 & 4.52 & 5.22 & 5.14 & 5.44 & 4.58\\
+\hspace{1em}AMKAT-PF2 & 4.58 & 4.36 & 4.76 & 4.80 & 4.92 & 4.34\\
+\hspace{1em}AMKAT-PF4 & 4.32 & 4.06 & 4.22 & 4.34 & 4.78 & 4.18\\
+\hspace{1em}AMKAT-PF8 & 4.06 & 3.74 & 4.16 & 4.14 & 4.68 & 4.00\\
+\hspace{1em}AMKAT-PF16 & 4.08 & 3.80 & 4.18 & 4.12 & 4.64 & 3.92\\
+\hspace{1em}AMKAT-PF32 & 3.96 & 3.78 & 4.30 & 4.20 & 4.54 & 3.98\\
+\hspace{1em}AMKAT-PF64 & 4.02 & 3.80 & 4.32 & 4.28 & 4.62 & 3.94\\
+\hspace{1em}AMKAT-PF128 & 3.90 & 3.78 & 4.26 & 4.14 & 4.52 & 3.86\\
+\hspace{1em}OMGA & 0.14 & 0.06 & 0.00 & 0.18 & 0.08 & 0.00\\
+\hspace{1em}DKAT & 5.36 & 5.06 & 4.88 & 5.76 & 5.58 & 4.68\\
+\hspace{1em}DKAT-LPK & 5.48 & 4.74 & 5.04 & 5.40 & 5.82 & 4.58\\
 \bottomrule
 \end{tabular}
 \end{table}

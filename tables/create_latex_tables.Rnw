@@ -42,10 +42,8 @@ alpha <- 0.05
 num_permutations <- 1000
 num_replicates <- 5000
 x_type <- 'snp'
-load(file.path(
-  dir_tables,
-  paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
-         '_m', num_replicates, '_', x_type, '.Rdata')))
+load(paste0(size_or_power, '_a', alpha * 1000, '_b', num_permutations,
+         '_m', num_replicates, '_', x_type, '.Rdata'))
 kbl(compiled_results, escape = F, booktabs = T, caption = caption) %>%
   kable_styling() %>%
   add_header_above(header_row) %>%
