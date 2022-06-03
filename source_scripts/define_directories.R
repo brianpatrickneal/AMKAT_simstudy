@@ -39,6 +39,9 @@ dir_plots_adaptive_within <-
 dir_plots_runtime_benchmarking <-
   file.path(dir_plots, 'runtime_benchmarking')
 
+dir_plots_snp_corr_heatmaps <-
+  file.path(dir_plots, 'snp_corr_heatmaps')
+
 
 # Create any nonexistent directories
 dirlist <- c(dir_simulated_data,
@@ -52,7 +55,8 @@ dirlist <- c(dir_simulated_data,
              dir_plots_feature_selection,
              dir_plots_kernel_selection,
              dir_plots_adaptive_within,
-             dir_plots_runtime_benchmarking)
+             dir_plots_runtime_benchmarking,
+             dir_plots_snp_corr_heatmaps)
 for (dir_i in dirlist) {
   if (!dir.exists(dir_i)) {
     dir.create(dir_i, showWarnings = FALSE, recursive = TRUE)

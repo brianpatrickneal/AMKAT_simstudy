@@ -4,7 +4,7 @@ pkgs_to_load <-
   c('AMKAT', 'Matrix', 'stats', 'MASS',
     'doParallel', 'foreach', 'iterators', 'beepr',
     'sim1000G', 'LaplacesDemon', 'mvtnorm', 'PearsonDS',
-    'dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot',
+    'dplyr', 'ggplot2', 'tidyr', 'viridis', 'cowplot', 'reshape2',
     'microbenchmark')
 lapply(X = pkgs_to_load, FUN = library, character.only = TRUE)
 
