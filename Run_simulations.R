@@ -210,3 +210,9 @@ source(file.path(dir_src, 'plot_results_runtime_benchmarking.R'))
 
 # Unregister local cluster used for parallel computing
 stopCluster(local_cluster)
+
+
+
+# Generate SNP-set correlation heatmaps -----------------------------------
+
+source(file.path(dir_src, 'generate_snp_corr_heatmaps.R'))
