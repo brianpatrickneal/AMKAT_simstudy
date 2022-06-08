@@ -945,7 +945,8 @@ makeKerSelPlots <- function(
       line_size, point_size, theme_settings, sample_sizes, title = NULL,
       subtitle =
         expression(paste(
-          'Correlated error components (', rho, ' = 0.5)'))) +
+          # 'Correlated error components (', rho, ' = 0.5)'))) +
+          'Correlated error components'))) +
       ylab(NULL)
     plot21 <- makeKerSelPlot(
       data, rho = 0, signal_values[[2]], 567, color_scheme, shape_scheme,
@@ -956,7 +957,8 @@ makeKerSelPlots <- function(
       line_size, point_size, theme_settings, sample_sizes, title = NULL,
       subtitle =
         expression(paste(
-          'Correlated error components (', rho, ' = 0.5)'))) +
+          # 'Correlated error components (', rho, ' = 0.5)'))) +
+          'Correlated error components'))) +
       ylab(NULL)
     joint_plot <- cowplot::plot_grid(
       plot11 + theme(legend.position = "none"),
@@ -1074,7 +1076,8 @@ makePhimrDensityPlots <- function(data) {
     joint_plot,
     title_settings = title_phimr(
       joint_title = "PhiMr Filter Effect on Signal Density",
-      joint_subtitle = makePhimrSubtitle("density")),
+      joint_subtitle = makePhimrSubtitle("density"),
+      joint_subtitle_height = 0.12),
     theme_settings = theme_phimr(), legend_from = plot_sparse_corr1))
 }
 

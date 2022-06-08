@@ -142,7 +142,7 @@ theme_kersel <- function(
   fontsize_title = rel(1.4),
   fontsize_subtitle = rel(1),
   fontsize_x_axis = rel(0.9),
-  fontsize_y_axis = rel(1.2),
+  fontsize_y_axis = rel(1),
   plot_margin = margin(b = 15),
   aspect = 0.9,
   title_position = "panel") {
@@ -159,10 +159,11 @@ title_kersel <- function(
   joint_subtitle,
   joint_title_size = 18,
   joint_subtitle_size = 11,
-  joint_title_height = 0.07,
-  title_overlay_margins = margin(t = 0, l = 7),
-  joint_subtitle_height = 0.15,
-  subtitle_overlay_margins = margin(t = -10, b = 10, l = 7),
+  joint_title_height = 0.05,
+  title_overlay_margins = margin(t = 7, l = 7),
+  joint_subtitle_height = 0.12,
+  # subtitle_overlay_margins = margin(t = -10, b = 10, l = 7),
+  subtitle_overlay_margins = margin(b = 7, l = 7),
   joint_legend_width = 0.25,
   joint_legend_height = 0.05,
   joint_legend_margins = margin(t = 10, b = 10)) {
@@ -189,21 +190,25 @@ makeKerSelSubtitle <- function(x_type,
                                rho = NULL # only used for cts x_type
 ) {
 
-  if (error_distribution == 'cauchy') { err_dist <- 'Cauchy ' }
-  if (error_distribution == 'normal') { err_dist <- 'normal ' }
+  # if (error_distribution == 'cauchy') { err_dist <- 'Cauchy ' }
+  # if (error_distribution == 'normal') { err_dist <- 'normal ' }
   # signal_label <- paste0(100 * signal_strength, '% signal strength')
   if (x_type == 'cts') {
     if (rho == 0) {
-      error_corr_label <- 'errors with uncorrelated components'
+      # error_corr_label <- 'errors with uncorrelated components'
+      error_corr_label <- '\nUncorrelated error components'
     } else {
       error_corr_label <-
-        paste0('errors with correlated components (\u00B1', '0.5 pairwise)')
+        # paste0('errors with correlated components (\u00B1', '0.5 pairwise)')
+        paste0('\nCorrelated error components (\u00B1', '0.5 pairwise)')
     }
     out <- paste0(
       'Continuous features',
       # signal_label,
-      '\nMultivariate ', err_dist, error_corr_label,
-      '\nMean kernel selection rate across ', num_replicates,
+      # '\nMultivariate ',
+      # err_dist,
+      error_corr_label,
+      '\nKernel selection rates across ', num_replicates,
       ' simulated data replicates')
   }
   if (x_type == 'snp') {
@@ -213,10 +218,10 @@ makeKerSelSubtitle <- function(x_type,
     }
     if (signal_correlation == 'low') {
       out <- paste0(out, ' with weakly-correlated signal variables')
-      }
+    }
     out <- paste0(out,
                   # signal_label,
-                  '\nMultivariate ', err_dist, 'errors',
+                  # '\nMultivariate ', err_dist, 'errors',
                   '\nMean kernel selection rate across ', num_replicates,
                   ' simulated data replicates')
   }
@@ -273,7 +278,7 @@ theme_phimr <- function(
   fontsize_title = rel(1.4),
   fontsize_subtitle = rel(1),
   fontsize_x_axis = rel(0.9),
-  fontsize_y_axis = rel(1.1),
+  fontsize_y_axis = rel(1.0),
   plot_margin = margin(b = 15),
   aspect = 0.9,
   title_position = "panel") {
@@ -290,10 +295,11 @@ title_phimr <- function(
   joint_subtitle = makePhimrSubtitle(),
   joint_title_size = 16,
   joint_subtitle_size = 11,
-  joint_title_height = 0.07,
-  title_overlay_margins = margin(t = 0, l = 7),
-  joint_subtitle_height = 0.15,
-  subtitle_overlay_margins = margin(t = -10, b = 10, l = 7),
+  joint_title_height = 0.04,
+  title_overlay_margins = margin(t = 7, l = 7),
+  joint_subtitle_height = 0.09,
+  # subtitle_overlay_margins = margin(t = -10, b = 10, l = 7),
+  subtitle_overlay_margins = margin(b = 7, l = 7),
   joint_legend_width = 0.35,
   joint_legend_height = 0.05,
   joint_legend_margins = margin(l = 20, r = -20)) {
@@ -312,13 +318,14 @@ makePhimrSubtitle <- function(type = "retention") {
         paste0(feature_type, ' with strongly-correlated signal variables')
     if (signal_correlation == 'low') feature_type <-
         paste0(feature_type, ' with weakly-correlated signal variables')
-    }
-  if (error_distribution == 'cauchy') { err_dist <- 'Cauchy ' }
-  if (error_distribution == 'normal') { err_dist <- 'normal ' }
+  }
+  # if (error_distribution == 'cauchy') { err_dist <- 'Cauchy ' }
+  # if (error_distribution == 'normal') { err_dist <- 'normal ' }
   # signal_label <- paste0(100 * signal_strength, '% signal strength')
-  out <- paste0(feature_type,
+  out <- paste0(feature_type
                 # signal_label,
-                '\nMultivariate ', err_dist, 'errors')
+                # '\nMultivariate ', err_dist, 'errors'
+  )
   if (type == "retention") {
     out <- paste0(
       out,
@@ -328,9 +335,9 @@ makePhimrSubtitle <- function(type = "retention") {
   if (type == "density") {
     out <- paste0(
       out,
-      '\nMean value, across ', num_replicates, ' simulated data replicates, ',
+      '\nMean value, across ', num_replicates, ' data replicates, ',
       'of signal density after PhiMr relative to before',
-      '\nSignal density measured as number of signal variables relative to total number of features')
+      '\nSignal density measured as number of signal variables relative to feature dimension')
   }
   return(out)
 }

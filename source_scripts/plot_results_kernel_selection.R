@@ -42,7 +42,8 @@ for (error_distribution in values_for_error_distribution) {
                   theme_kersel(plot_margin = margin(l = -20, b = 15)),
                 title_settings =
                   title_kersel(joint_title = makeKerSelTitle(y_ind),
-                               joint_subtitle = makeKerSelSubtitle(x_type)))
+                               joint_subtitle = makeKerSelSubtitle(x_type),
+                               joint_subtitle_height = 0.09))
             cowplot::save_plot(
               filename = files$kerplots[[y_ind]], plot = plot_kersel,
               ncol = length(values_for_error_corr_strength),
