@@ -39,10 +39,14 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
 
   # PhiMr Filter
   if (!file.exists(bench_file_phimr) | overwrite_existing_plots) {
-    plot_phimr <- makePhimrBenchPlot(data_phimr, reps_phimr)
+    plot_phimr <- makePhimrBenchPlot(
+      data_phimr, reps_phimr,
+      theme_settings = theme_bench_phimr(
+        aspect = 0.4
+      ),)
     cowplot::save_plot(
       filename = bench_file_phimr, plot = plot_phimr,
-      base_height = height_bench_phimr, base_asp = asp_bench_phimr)
+      base_height = 4.5, base_width = 9)
   }
 
   # single-trait standardized statistic
