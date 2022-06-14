@@ -11,13 +11,30 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
   # Kernel Matrix
   if (!file.exists(bench_file_kermat) | overwrite_existing_plots) {
     plot_kermat <- makeKernelBenchPlots(
-      data_kermat, title_settings = title_bench_ker(reps_kermat)
+      data_kermat,
+      title_settings = title_bench_ker(
+        reps_kermat,
+        joint_title_size = 18,
+        joint_subtitle_size = 14,
+        joint_title_height = 0.12,
+        title_overlay_margins = margin(t = 3, l = 7),
+        joint_subtitle_height = 0.12,
+        subtitle_overlay_margins = margin(t = -15, l = 7),
+        joint_legend_height = 0.01,
+        joint_legend_margins = margin(t = -10, b = -10)),
+      theme_settings = theme_bench_ker(base_size = 16,
+                                       fontsize_title = rel(10/11),
+                                       # fontsize_x = rel(10/11),
+                                       # fontsize_y = rel(10/11)
+      )
     )
     cowplot::save_plot(
       filename = bench_file_kermat, plot = plot_kermat,
       ncol = 5,
-      base_height = height_bench_ker,
-      base_asp = asp_bench_ker)
+      base_height = 4.5,
+      # base_width = 2.1
+      base_asp = 0.53
+    )
   }
 
   # PhiMr Filter
@@ -38,10 +55,10 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
           "4 response variables; continuous features\nMedian time over ",
           reps_stat, " executions of the .estimateSignalToNoise()\nfunction from the AMKAT R package",
           "\nComputation does not include kernel matrix"),
-        theme_settings = theme_bench_phimr(aspect = 0.5))
+        theme_settings = theme_bench_phimr(aspect = 0.4))
     cowplot::save_plot(
       filename = bench_file_stat, plot = plot_stat,
-      base_height = 7, base_asp = 0.8)
+      base_width = 8, base_height = 4)
   }
 
   # covariate adjustment
@@ -56,7 +73,7 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
         theme_settings = theme_bench_phimr(aspect = 0.5))
     cowplot::save_plot(
       filename = bench_file_cov, plot = plot_cov,
-      base_height = 7, base_asp = 0.8)
+      base_width = 8, base_height = 4)
   }
 
   # AMKAT full test
