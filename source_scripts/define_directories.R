@@ -43,6 +43,28 @@ dir_plots_snp_corr_heatmaps <-
   file.path(dir_plots, 'snp_corr_heatmaps')
 
 
+dir_plots_notitles <-
+  file.path(dir_plots, 'no_titles')
+
+dir_plots_notitles_power <-
+  file.path(dir_plots_notitles, 'power')
+
+dir_plots_notitles_feature_selection <-
+  file.path(dir_plots_notitles, 'adaptive_across', 'feature_selection')
+
+dir_plots_notitles_kernel_selection <-
+  file.path(dir_plots_notitles, 'adaptive_across', 'kernel_selection')
+
+dir_plots_notitles_adaptive_within <-
+  file.path(dir_plots_notitles, 'adaptive_within')
+
+dir_plots_notitles_runtime_benchmarking <-
+  file.path(dir_plots_notitles, 'runtime_benchmarking')
+
+dir_plots_notitles_snp_corr_heatmaps <-
+  file.path(dir_plots_notitles, 'snp_corr_heatmaps')
+
+
 # Create any nonexistent directories
 dirlist <- c(dir_simulated_data,
              dir_data_size_power,
@@ -56,7 +78,14 @@ dirlist <- c(dir_simulated_data,
              dir_plots_kernel_selection,
              dir_plots_adaptive_within,
              dir_plots_runtime_benchmarking,
-             dir_plots_snp_corr_heatmaps)
+             dir_plots_snp_corr_heatmaps,
+             dir_plots_notitles,
+             dir_plots_notitles_power,
+             dir_plots_notitles_feature_selection,
+             dir_plots_notitles_kernel_selection,
+             dir_plots_notitles_adaptive_within,
+             dir_plots_notitles_runtime_benchmarking,
+             dir_plots_notitles_snp_corr_heatmaps)
 for (dir_i in dirlist) {
   if (!dir.exists(dir_i)) {
     dir.create(dir_i, showWarnings = FALSE, recursive = TRUE)

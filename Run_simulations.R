@@ -18,6 +18,7 @@ source(file.path(dir_src, 'define_directories.R'))
 # Initialize comparison methods
 source(file.path(dir_src, 'initialize_comparison_methods.R'))
 source(file.path(dir_src, "define_plot_functions.R"))
+source(file.path(dir_src, "define_plot_functions_notitles.R"))
 source(file.path(dir_src, "define_plot_settings.R"))
 
 RNGkind("L'Ecuyer-CMRG") # for set.seed with foreach/doParallel
@@ -83,6 +84,7 @@ source(file.path(dir_src, 'simulation_size_power.R'))
 source(file.path(dir_src, 'compile_results_size_power.R'))
 source(file.path(dir_src, 'prepare_plotdata_power.R'))
 source(file.path(dir_src, 'plot_results_power.R'))
+source(file.path(dir_src, 'plot_results_power_notitles.R'))
 
 values_for_num_x_variables <- c(500)
 values_for_sample_size <- c(50, 75, 100, 125, 150)
@@ -90,6 +92,7 @@ source(file.path(dir_src, 'simulation_size_power.R'))
 source(file.path(dir_src, 'compile_results_size_power.R'))
 source(file.path(dir_src, 'prepare_plotdata_power.R'))
 source(file.path(dir_src, 'plot_results_power.R'))
+source(file.path(dir_src, 'plot_results_power_notitles.R'))
 
 values_for_num_x_variables <- c(1000)
 values_for_sample_size <- c(50, 100, 150, 200)
@@ -97,6 +100,7 @@ source(file.path(dir_src, 'simulation_size_power.R'))
 source(file.path(dir_src, 'compile_results_size_power.R'))
 source(file.path(dir_src, 'prepare_plotdata_power.R'))
 source(file.path(dir_src, 'plot_results_power.R'))
+source(file.path(dir_src, 'plot_results_power_notitles.R'))
 
 values_for_num_x_variables <- c(2000)
 values_for_error_corr_strength <- c(0.5)
@@ -105,6 +109,7 @@ source(file.path(dir_src, 'simulation_size_power.R'))
 source(file.path(dir_src, 'compile_results_size_power.R'))
 source(file.path(dir_src, 'prepare_plotdata_power.R'))
 source(file.path(dir_src, 'plot_results_power.R'))
+source(file.path(dir_src, 'plot_results_power_notitles.R'))
 
 
 # Discrete X
@@ -125,6 +130,7 @@ source(file.path(dir_src, 'simulation_size_power.R'))
 source(file.path(dir_src, 'compile_results_size_power.R'))
 source(file.path(dir_src, 'prepare_plotdata_power.R'))
 source(file.path(dir_src, 'plot_results_power.R'))
+source(file.path(dir_src, 'plot_results_power_notitles.R'))
 
 
 # Adaptive Methodology: Variability Across Data Sets ----------------------
@@ -136,7 +142,9 @@ source(file.path(dir_src, 'initialize_adaptive_across.R'))
 source(file.path(dir_src, 'simulation_adaptive_across.R'))
 source(file.path(dir_src, 'prepare_plotdata_adaptive_across.R'))
 source(file.path(dir_src, 'plot_results_kernel_selection.R'))
+source(file.path(dir_src, 'plot_results_kernel_selection_notitles.R'))
 source(file.path(dir_src, 'plot_results_feature_selection.R'))
+source(file.path(dir_src, 'plot_results_feature_selection_notitles.R'))
 
 # Discrete X
 x_type <- 'snp'
@@ -144,7 +152,9 @@ source(file.path(dir_src, 'initialize_adaptive_across.R'))
 source(file.path(dir_src, 'simulation_adaptive_across.R'))
 source(file.path(dir_src, 'prepare_plotdata_adaptive_across.R'))
 source(file.path(dir_src, 'plot_results_kernel_selection.R'))
+source(file.path(dir_src, 'plot_results_kernel_selection_notitles.R'))
 source(file.path(dir_src, 'plot_results_feature_selection.R'))
+source(file.path(dir_src, 'plot_results_feature_selection_notitles.R'))
 
 
 # Adaptive Methodology: Variability Within Data Sets ----------------------
@@ -162,17 +172,20 @@ values_for_num_x_variables <- c(100)
 source(file.path(dir_src, 'simulation_adaptive_within.R'))
 source(file.path(dir_src, 'process_data_adaptive_within.R'))
 source(file.path(dir_src, 'plot_results_adaptive_within.R'))
+source(file.path(dir_src, 'plot_results_adaptive_within_notitles.R'))
 values_for_sample_size <- c(50)
 values_for_num_x_variables <- c(150, 200)
 source(file.path(dir_src, 'simulation_adaptive_within.R'))
 source(file.path(dir_src, 'process_data_adaptive_within.R'))
 source(file.path(dir_src, 'plot_results_adaptive_within.R'))
+source(file.path(dir_src, 'plot_results_adaptive_within_notitles.R'))
 values_for_signal_density <- c('dense')
 values_for_sample_size <- c(100)
 values_for_num_x_variables <- c(500)
 source(file.path(dir_src, 'simulation_adaptive_within.R'))
 source(file.path(dir_src, 'process_data_adaptive_within.R'))
 source(file.path(dir_src, 'plot_results_adaptive_within.R'))
+source(file.path(dir_src, 'plot_results_adaptive_within_notitles.R'))
 
 
 # Discrete X
@@ -185,16 +198,19 @@ values_for_error_corr_strength <- c(0)
 source(file.path(dir_src, 'simulation_adaptive_within.R'))
 source(file.path(dir_src, 'process_data_adaptive_within.R'))
 source(file.path(dir_src, 'plot_results_adaptive_within.R'))
+source(file.path(dir_src, 'plot_results_adaptive_within_notitles.R'))
 values_for_signal_density <- c('sparse')
 values_for_error_corr_strength <- c(0.5)
 source(file.path(dir_src, 'simulation_adaptive_within.R'))
 source(file.path(dir_src, 'process_data_adaptive_within.R'))
 source(file.path(dir_src, 'plot_results_adaptive_within.R'))
+source(file.path(dir_src, 'plot_results_adaptive_within_notitles.R'))
 values_for_snp_signal_corr <- c('high')
 values_for_sample_size <- c(45)
 source(file.path(dir_src, 'simulation_adaptive_within.R'))
 source(file.path(dir_src, 'process_data_adaptive_within.R'))
 source(file.path(dir_src, 'plot_results_adaptive_within.R'))
+source(file.path(dir_src, 'plot_results_adaptive_within_notitles.R'))
 
 
 
@@ -204,6 +220,7 @@ source(file.path(dir_src, 'initialize_runtime_benchmarking.R'))
 source(file.path(dir_src, 'simulation_runtime_benchmarking.R'))
 source(file.path(dir_src, 'prepare_plotdata_runtime_benchmarking.R'))
 source(file.path(dir_src, 'plot_results_runtime_benchmarking.R'))
+source(file.path(dir_src, 'plot_results_runtime_benchmarking_notitles.R'))
 
 
 # Termination -------------------------------------------------------------

@@ -607,7 +607,10 @@ all_shapes <- c(15, # solid square
 
 # Power -------------------------------------------------------------------
 
-powerPlotFiles <- function() {
+powerPlotFiles <- function(titles = TRUE) {
+
+  plotdir <- ifelse(titles,
+                    yes = dir_plots_power, no = dir_plots_notitles_power)
 
   # Filename stem describing set of scenarios for current plots
   part1 <- paste0('m', num_replicates, '_', x_type, '_',
@@ -621,9 +624,9 @@ powerPlotFiles <- function() {
   file_plotdata <- file.path(dir_plotdata_power, paste0(stem, '.Rdata'))
 
   # files for plots
-  file_mainplot <- file.path(dir_plots_power, paste0(stem, '.pdf'))
-  file_Qplot <- file.path(dir_plots_power, paste0(stem, '_Q.pdf'))
-  file_Qbarplot <- file.path(dir_plots_power, paste0(stem, '_Qbar.pdf'))
+  file_mainplot <- file.path(plotdir, paste0(stem, '.pdf'))
+  file_Qplot <- file.path(plotdir, paste0(stem, '_Q.pdf'))
+  file_Qbarplot <- file.path(plotdir, paste0(stem, '_Qbar.pdf'))
 
   return(list("plotdata" = file_plotdata,
               "main" = file_mainplot,
@@ -634,6 +637,8 @@ powerPlotFiles <- function() {
                 file.exists(file_Qplot) &
                 file.exists(file_Qbarplot)))
 }
+
+
 
 makePowerPlotDesc <- function() {
 
