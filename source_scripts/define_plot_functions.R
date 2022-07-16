@@ -1617,7 +1617,7 @@ makePhimrHistogram <- function(values, type, maxcount) {
     theme(panel.grid.major.x = element_blank(),
           panel.grid.minor.x = element_blank(),
           plot.title = element_text(margin = margin(b = 15)),
-          axis.text.x = element_text(margin = margin(t = -7, b = 5))) +
+          axis.text.x = element_text(margin = margin(t = -7))) +
     guides(x = guide_axis(angle = 90)) +
     geom_vline(xintercept = mean(values), color = border_color,
                linetype = "dashed", size = 1.2)

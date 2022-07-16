@@ -573,7 +573,7 @@ theme_phimr_histo <- function(
   fontsize_subtitle = rel(1),
   fontsize_x_axis = rel(1.2),
   fontsize_y_axis = rel(1.3),
-  plot_margin = margin(b = 7),
+  plot_margin = margin(b = 0),
   aspect = 0.8,
   title_position = "panel") {
   makeTheme(

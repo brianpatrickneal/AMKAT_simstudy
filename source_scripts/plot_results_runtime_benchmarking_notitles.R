@@ -54,9 +54,9 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
     cowplot::save_plot(
       filename = bench_file_kermat, plot = plot_kermat,
       ncol = 5,
-      base_height = 4.5,
+      base_height = 4.1,
       # base_width = 2.1
-      base_asp = 0.53
+      base_asp = 0.6
     )
   }
 
@@ -64,11 +64,12 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
   if (!file.exists(bench_file_phimr) | overwrite_existing_plots) {
     plot_phimr <- makePhimrBenchPlot(
       data_phimr, reps_phimr,
-      theme_settings = theme_bench_phimr(aspect = 0.4)) +
-      labs(title = NULL, subtitle = NULL)
+      theme_settings = theme_bench_phimr(aspect = 0.3)) +
+      labs(title = NULL, subtitle = NULL) +
+      guides(x = guide_axis(angle = 0))
     cowplot::save_plot(
       filename = bench_file_phimr, plot = plot_phimr,
-      base_height = 4.5, base_width = 9)
+      base_height = 2.75, base_width = 8)
   }
 
   # single-trait standardized statistic
@@ -78,10 +79,11 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
         data_stat, reps_stat, 1e+6, "Median Time (ms)",
         NULL,
         NULL,
-        theme_settings = theme_bench_phimr(aspect = 0.4))
+        theme_settings = theme_bench_phimr(aspect = 0.3)) +
+      guides(x = guide_axis(angle = 0))
     cowplot::save_plot(
       filename = bench_file_stat, plot = plot_stat,
-      base_width = 8, base_height = 4)
+      base_width = 8, base_height = 2.5)
   }
 
   # covariate adjustment
@@ -91,10 +93,11 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
         data_cov, reps_cov, 1e+3, "Median Time (\U00B5s)",
         NULL,
         NULL,
-        theme_settings = theme_bench_phimr(aspect = 0.5))
+        theme_settings = theme_bench_phimr(aspect = 0.3)) +
+      guides(x = guide_axis(angle = 0))
     cowplot::save_plot(
       filename = bench_file_cov, plot = plot_cov,
-      base_width = 8, base_height = 4)
+      base_width = 8, base_height = 2.3)
   }
 
   # AMKAT full test
@@ -103,6 +106,6 @@ if (!bench_plot_files_exist | overwrite_existing_plots) {
       data = data_amkat, title_settings = title_bench_amkat(num_permutations))
     cowplot::save_plot(
       filename = bench_file_amkat, plot = plot_amkat,
-      ncol = 2, base_height = height_bench_amkat, base_asp = asp_bench_amkat)
+      ncol = 2, base_height = 3.5, base_asp = 1)
   }
 }

@@ -43,8 +43,8 @@ for (error_distribution in values_for_error_distribution) {
                           margin(t = -15, b = -15, l = 7)))
                   cowplot::save_plot(
                     pv_files$plot_stats, plot = distr_plots, ncol = 2,
-                    base_height = height_statDistr,
-                    base_asp = asp_statDistr)
+                    base_height = 3,
+                    base_width = 3.25)
                 }
 
                 #### P-Value Distribution vs Q ####
@@ -90,7 +90,7 @@ for (error_distribution in values_for_error_distribution) {
                           subtitle_overlay_margins = margin(t = -15, l = 7)))
                   cowplot::save_plot(
                     pv_files$plot_sd, plot = sd_lineplots, ncol = 2,
-                    base_height = height_pvline, base_asp = asp_pvline)
+                    base_height = 4.5/1.15, base_width = 5/1.15)
                 }
 
                 #### Mean P-Value ####
@@ -107,7 +107,7 @@ for (error_distribution in values_for_error_distribution) {
                           subtitle_overlay_margins = margin(t = -15, l = 7)))
                   cowplot::save_plot(
                     pv_files$plot_mean, plot = mean_lineplots, ncol = 2,
-                    base_height = height_pvline, base_asp = asp_pvline)
+                    base_height = 4.5/1.15, base_width = 5/1.15)
                 }
 
                 #### Signal/Noise Retention by PhiMr ####
@@ -120,8 +120,7 @@ for (error_distribution in values_for_error_distribution) {
                         feature_select_rates,
                         getSignalIndices(x_type, signal_density)),
                     ncol = 2,
-                    base_height = height_phimr_within,
-                    base_asp = asp_phimr_within)
+                    base_height = 4.5/1.15, base_width = 5/1.15)
                 }
               }
             }
